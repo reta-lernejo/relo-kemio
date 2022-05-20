@@ -3,6 +3,8 @@
 % https://de.wikipedia.org/wiki/Elektronenkonfiguration
 % https://www.chemiezauber.de/inhalt/q1/aufbau-der-materie/atommodelle/orbitaltheorie/elektronenkonfiguration-der-elemente/422-kaestchenschreibweise.html
 % https://de.wikipedia.org/wiki/Aufbauprinzip
+%
+% https://www.seilnacht.com/Lexikon/psval.htm
 
 %! Redonas nomon de orbitalo el ĉefkvantumnombro N (ŝelo) 
 % kaj kromkvantumnombro L (subŝelo) kaj magneta kvantumnombro M
