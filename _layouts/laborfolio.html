@@ -50,7 +50,7 @@ layout: default
 {% assign next-file = "/" | append: page.next_ch | append: ".md"  %}
 {% assign next-page = site[page.collection] | where_exp: "item", "item.path contains next-file" | first %}
 {% if next-page %}
-<a class="sekva_folio" href="{{next-page.url}}">{{next-page.title}}</a>
+<a class="sekva_folio" href="{{next-page.url | relative_url}}">{{next-page.title}}</a>
 {% endif %}
 {% endif %}
 
