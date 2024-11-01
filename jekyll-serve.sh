@@ -12,7 +12,7 @@ echo "<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<
 # vd pri gem github-pages
 # https://docs.github.com/en/pages/setting-up-a-github-pages-site-with-jekyll/testing-your-github-pages-site-locally-with-jekyll
 
-# vd. eblaj pri problomoj kun bundler-versio:
+# vd. pri eblaj problemoj kun bundler-versio:
 # https://bundler.io/blog/2019/05/14/solutions-for-cant-find-gem-bundler-with-executable-bundle.html
 # https://stackoverflow.com/questions/51035335/appengine-flexible-ruby-environment-application-startup-error-usr-bin-env-r
 # kontrolu ankaŭ ĉu ruby kaj bundler estas koheraj (ekz-e per komando which)
