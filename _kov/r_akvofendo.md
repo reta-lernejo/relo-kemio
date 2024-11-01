@@ -8,7 +8,7 @@ js:
   - mathjax/es5/tex-chtml
   - laboratorio-0d
 css:
-  - laboratorio-0c
+  - laboratorio-0d
 ---
 
 paĝo en preparo...

@@ -638,24 +638,42 @@ class LabHofmanAparato  extends LabUjo {
             0,-10,-30,-50,-60 // ĝis la ligtubo
         ];
 
-        const bordo = (LabSVG.xy_pado(xj,yj)
-            + `L${xj[0]+LabHofmanAparato.tubdistanco},${yj[yj.length-1]}`
-            + LabSVG.xy_pado(LabSVG.kspegul(xj.reverse(),LabHofmanAparato.tubdistanco),yj.reverse(),"L")                
-            + 'Z')
-            // iom artifika enŝovo de la globkurbo
-            .replace('L0,-30L8,-10','Q0,-30 8,-10') 
-            .replace('L40,-30L32,-50L32','Q40,-30 32,-50L32') 
-            .replace('L120,-30L128,-10','Q120,-30 128,-10')
-            .replace('L160,-30L152,-50','Q160,-30 152,-50');
-        
+        // const bordo = (LabSVG.xy_pado(xj,yj)
+        //     + `L${xj[0]+LabHofmanAparato.tubdistanco},${yj[yj.length-1]}`
+        //     + LabSVG.xy_pado(LabSVG.kspegul(xj.reverse(),LabHofmanAparato.tubdistanco),yj.reverse(),"L")                
+        //     + 'Z')
+        //     // iom artifika enŝovo de la globkurbo
+        //     .replace('L0,-30L8,-10','Q0,-30 8,-10') 
+        //     .replace('L40,-30L32,-50L32','Q40,-30 32,-50L32') 
+        //     .replace('L120,-30L128,-10','Q120,-30 128,-10')
+        //     .replace('L160,-30L152,-50','Q160,-30 152,-50');
+        const bordo_1 = (LabSVG.xy_pado(xj,yj)+'Q35,-70 32,-80Z')
+            // iom artifika enŝovo de globkurboj
+            .replace('L0,-30L8,-10','Q3,-30 8,-10') 
+            .replace('L40,-30L32,-50L32','Q37,-30 32,-50L32');
+
+        const bordo_2 = (LabSVG.xy_pado(LabSVG.kspegul(xj.reverse(),20),yj.reverse())+'Q5,-70 8,-60Z')
+            // iom artifika enŝovo de globkurboj
+            .replace('L0,-30L8,-10','Q3,-30 8,-10') 
+            .replace('L40,-30L32,-50L32','Q37,-30 32,-50L32');
+            
         this.g = Lab.e("g",{
             id: id,
-            class: "ujo bureto"
+            class: "ujo hofmanaparato"
         });
-        const ujo = Lab.e("path",{
-            d: bordo,
+        const ujo_1 = Lab.e("path",{
+            d: bordo_1,
             class: "vitro"
         });
+        const ujo_2 = Lab.e("path",{
+            d: bordo_2,
+            class: "vitro",
+            transform: `translate(${40+LabHofmanAparato.tubdistanco},0)`
+        });
+        const ligtubo = Lab.e("path",{
+            d: `M30,-60q-5,-10 0,-20l${40+LabHofmanAparato.tubdistanco-20},0q5,10 0,20Z`,
+            class: "ligtubo",
+        })
 
         // skalo
         /*
@@ -701,7 +719,7 @@ class LabHofmanAparato  extends LabUjo {
             const c_id = `_clp_${id}`;
             const limigo = Lab.limigo(c_id, 
                 Lab.e("path",{
-                    d: bordo
+                    d: bordo_1
                 })
             );
 
@@ -723,7 +741,7 @@ class LabHofmanAparato  extends LabUjo {
             this.g.append(limigo,enhavo);
         }
 
-        this.g.append(krano_1,krano_2,ujo,skalo_1,skalo_2);
+        this.g.append(krano_1,krano_2,ujo_1,ujo_2,ligtubo,skalo_1,skalo_2);
     }
 
     /**
@@ -1644,7 +1662,19 @@ class Laboratorio extends LabSVG {
                 {procento: "55%", koloro: "#222", opako: "0.2"},
                 //{procento: "60%", koloro: "#111", opako: "0"},
                 {procento: "100%", koloro: "#000", opako: ".4"},
-            ])
+            ]),
+            Lab.gradiento(
+            { id: "vitro_horizontala", gradientTransform: "rotate(90)" },
+            [
+                    {procento:  "0%", koloro: "#334", opako: ".6"}, //5
+                    {procento: "15%", koloro: "#eef", opako: "0.7"}, //6
+                    {procento: "60%", koloro: "#112", opako: "0.3"}, //2
+                    {procento: "90%", koloro: "#223", opako: ".6"}, //5
+                    {procento: "100%", koloro: "#ccd", opako: ".9"}, //8
+                    // test
+                    // {procento:  "0%", koloro: "#f00", opako: ".9"},
+                    // {procento: "100%", koloro: "#00f", opako: "0.9"},
+                ])    
         )
 
         // ombroj
