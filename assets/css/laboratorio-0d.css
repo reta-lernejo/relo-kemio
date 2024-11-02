@@ -107,6 +107,15 @@
     stroke-width: 1;
 }
 
+.ciferplato .nombro {
+    text-anchor: middle;
+    font-size: 8pt;
+}
+
+.ciferplato .unuo {
+    text-anchor: middle;
+}
+
 .ciferplato .montrilo {
     stroke: #cc3c22;
     stroke-width: 2.0;
@@ -152,6 +161,15 @@
 .krano {
     fill: chocolate;
 }
+
+.fiksilo_plus {
+    fill: url(#klemo_plus);
+}
+
+.fiksilo_minus {
+    fill: url(#klemo_minus);
+}
+
 
 #guto {
     stroke: gray;

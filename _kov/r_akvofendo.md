@@ -48,7 +48,7 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     // bureto supre
     aparato = Lab.hofmanaparato("hofman",100); // elfluo = 100ml, t.e. malplena
     lab.metu(aparato,{id: "supre", x:X_HOFMANN, y:ALTO-20});
-    voltmetro = new LabMezurilo("voltmetro");
+    voltmetro = new LabMezurilo("voltmetro",30,"V");
     lab.metu(voltmetro,{id: "voltmetro", x:10, y:ALTO-90})
 
   });

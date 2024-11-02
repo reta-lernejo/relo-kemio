@@ -724,6 +724,31 @@ class LabHofmanAparato  extends LabUjo {
             transform: `translate(${LabHofmanAparato.tubdistanco+22},${15-h})`
         });
 
+        // elektrodoj
+        const ebordo = `M0,0L10,0L10,40L0,40Z`;
+        const elektrodo_plus = Lab.e("path",{
+            class: "elektrodo",
+            d: ebordo,
+            transform: `translate(15,-40)`
+        });
+        const elektrodo_minus = Lab.e("path",{
+            class: "elektrodo",
+            d: ebordo,
+            transform: `translate(${LabHofmanAparato.tubdistanco+37},-40)`
+        });
+        // fiksiloj de elektrodoj
+        const fbordo = `M5,0L35,0L35,20L5,20Z`;
+        const fiksilo_plus = Lab.e("path",{
+            class: "fiksilo_plus",
+            d: fbordo
+            //transform: `translate(0,-20)`
+        });
+        const fiksilo_minus = Lab.e("path",{
+            class: "fiksilo_minus",
+            d: fbordo,
+            transform: `translate(${LabHofmanAparato.tubdistanco+22},0)`
+        });
+
         // enhavo
         if (ml>=0) {           
             const c_id = `_clp_${id}`;
@@ -751,7 +776,9 @@ class LabHofmanAparato  extends LabUjo {
             this.g.append(limigo,enhavo);
         }
 
-        this.g.append(krano_1,krano_2,ujo_1,ujo_2,ligtubo,rezervujo,skalo_1,skalo_2);
+        this.g.append(krano_1,krano_2,elektrodo_plus,elektrodo_minus,
+            ujo_1,ujo_2,ligtubo,rezervujo,skalo_1,skalo_2,
+            fiksilo_plus,fiksilo_minus);
     }
 
     /**
@@ -1059,11 +1086,11 @@ class LabMezurilo extends LabIlo {
      * @param {*} r rando
      * @param {*} teksto 
      */
-    constructor(id,w=120,h=80,r=5,teksto='') {
+    constructor(id,max,unuo='',w=120,h=80,r=5) {
         super(id);
         const rmin = h/2;
         const lstrek = w/16;
-        const O = [w/2,rmin+lstrek+10]
+        const O = [w/2,rmin+lstrek+20]
 
         const cplato = Lab.e("g",{
             id: `_plato_${id}`,
@@ -1073,17 +1100,31 @@ class LabMezurilo extends LabIlo {
             width: w, height: h,
             rx: r
         });
-        const skalo = Lab.rskalo(id+"_skalo",0,30,4,1,5,10,lstrek,rmin); //30*4° = 120°
+        const skalo = Lab.rskalo(id+"_skalo",0,max,4,1,5,10,lstrek,rmin); //30*4° = 120°
         Lab.a(skalo,{
             transform: `translate(${O[0]} ${O[1]}) rotate(${-150})`
-        })
+        });
+        cplato.append(kadro,skalo);
+        // nombroj ĉe la skalo
+        for (let t=0; t<=max/10; t++) {
+            const vt = Lab.e("text",{
+                x: O[0], y:12,
+                transform: `rotate(${-60+t*10*120/max} ${O[0]} ${O[1]})`,
+                class: "nombro"
+            },""+t*10);
+            cplato.append(vt);
+        }
+        const tx = Lab.e("text",{
+            x: w/2, y: h*2/3,
+            class: "unuo"
+        },unuo);
         const montrilo = Lab.e("path",{
             d: `M${O[0]},${O[1]}l0,${-rmin-lstrek/2}`,
             //transform: `rotate(-60 ${O[0]} ${O[1]})`,
             transform: `rotate(-30 ${O[0]} ${O[1]})`,
             class: "montrilo"
         });
-        cplato.append(kadro,skalo,montrilo);
+        cplato.append(tx,montrilo);
         this.g = cplato;
     }
 
@@ -1811,7 +1852,19 @@ class Laboratorio extends LabSVG {
                     // test
                     // {procento:  "0%", koloro: "#f00", opako: ".9"},
                     // {procento: "100%", koloro: "#00f", opako: "0.9"},
-                ])    
+            ]),
+            Lab.gradiento(
+            { id: "klemo_plus"},
+            [
+                    {procento:  "0%", koloro: "crimson"},
+                    {procento: "100%", koloro: "#200"}
+            ]),
+            Lab.gradiento(
+            { id: "klemo_minus"},
+            [
+                    {procento:  "0%", koloro: "#223"},
+                    {procento: "100%", koloro: "#000"}
+            ])        
         )
 
         // ombroj
