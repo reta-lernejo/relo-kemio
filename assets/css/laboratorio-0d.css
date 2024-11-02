@@ -96,6 +96,23 @@
     fill-opacity: 1;
 }
 
+.ciferplato rect {
+    stroke: #913c22;
+    stroke-width: 2;
+    fill: #fafafa;
+}
+
+.ciferplato .skalo {
+    stroke: black;
+    stroke-width: 1;
+}
+
+.ciferplato .montrilo {
+    stroke: #cc3c22;
+    stroke-width: 2.0;
+    stroke-linecap: round;
+}
+
 .diagramo .fono {
     fill: #fafafa;
 }

@@ -972,6 +972,9 @@ class LabSondilo extends LabIlo {
         });
 
         // monitoreto
+        this.ciferplato = new LabCiferplato("ciferplato");
+        Lab.a(this.ciferplato,{transform: `translate(-57 ${-h+5})`})
+        /*
         const mon = Lab.e("g",{
             transform: `translate(-57 ${-h+5})`,
             class: "monitoro"
@@ -985,8 +988,9 @@ class LabSondilo extends LabIlo {
             class: "valoro"
         },teksto);
         mon.append(kadro,tx);
+        */
 
-        g1.append(r,mon);
+        g1.append(r,this.ciferplato);
         if (klino) {
             Lab.a(g1,{
                 transform: `rotate(${klino})`
@@ -999,8 +1003,99 @@ class LabSondilo extends LabIlo {
      * Aktualigas la montritan valoron en la monitoro
      */
     valoro(val) {
+        this.ciferplato.valoro(val);
+        /*
         const tx = this.g.querySelector("text");
         tx.textContent = val;
+        */
+    }
+}
+
+class LabCiferplato extends LabIlo {
+
+    /**
+     * Kreas simplan ciferplaton
+     * @param {*} id 
+     * @param {*} w larĝo
+     * @param {*} h alto
+     * @param {*} r rando (angulrondo)
+     * @param {*} teksto 
+     */
+    constructor(id,w=60,h=30,r=5,teksto='') {
+        super(id);
+        const cplato = Lab.e("g",{
+            id: `_plato_${id}`,
+            class: "ciferplato"
+        });
+        const kadro = Lab.e("rect",{
+            width: w, height: h,
+            rx: r
+        });
+        const tx = Lab.e("text",{
+            x: w/12, y: h/2,
+            class: "valoro"
+        },teksto);
+        cplato.append(kadro,tx);
+        this.g = cplato;
+    }
+
+    /**
+     * Aktualigas la montritan valoron en la monitoro
+     */
+    valoro(val) {
+        const tx = this.g.querySelector("text");
+        tx.textContent = val;
+    }
+}
+
+class LabMezurilo extends LabIlo {
+
+    /**
+     * Kreas mezurilon kun ronda skalo
+     * kaj montrilo
+     * @param {*} id 
+     * @param {*} w larĝo
+     * @param {*} h alto
+     * @param {*} r rando
+     * @param {*} teksto 
+     */
+    constructor(id,w=120,h=80,r=5,teksto='') {
+        super(id);
+        const rmin = h/2;
+        const lstrek = w/16;
+        const O = [w/2,rmin+lstrek+10]
+
+        const cplato = Lab.e("g",{
+            id: `_plato_${id}`,
+            class: "ciferplato"
+        });
+        const kadro = Lab.e("rect",{
+            width: w, height: h,
+            rx: r
+        });
+        const skalo = Lab.rskalo(id+"_skalo",0,30,4,1,5,10,lstrek,rmin); //30*4° = 120°
+        Lab.a(skalo,{
+            transform: `translate(${O[0]} ${O[1]}) rotate(${-150})`
+        })
+        const montrilo = Lab.e("path",{
+            d: `M${O[0]},${O[1]}l0,${-rmin-lstrek/2}`,
+            //transform: `rotate(-60 ${O[0]} ${O[1]})`,
+            transform: `rotate(-30 ${O[0]} ${O[1]})`,
+            class: "montrilo"
+        });
+        cplato.append(kadro,skalo,montrilo);
+        this.g = cplato;
+    }
+
+    /**
+     * Aktualigas la montritan valoron en la monitoro
+     */
+    valoro(val) {
+        // ... kalkulu angulo laŭ valoro kaj rotaciu la montrilon akorde        
+        /*
+        const tx = this.g.querySelector("text");
+        tx.textContent = val;
+        */
     }
 }
 
@@ -1622,7 +1717,39 @@ class Lab {
             class: "skalo"
         });
     }
- 
+
+    /**
+     * Kreas rondan skalon
+     * @param {string} id 
+     * @param {number} min minimuma valoro
+     * @param {number} max maksimuma valoro
+     * @param {number} da anguldistanco inter du apudaj valoroj i, i+i1
+     * @param {number} i1 plej malgranda paŝintervalo (mallongaj strekoj)
+     * @param {number} i2 intervalo por mezlongaj strekoj
+     * @param {number} i3 intervalo por longaj strekoj
+     * @param {number} len longeco de streketo, kvinoj 1.5*len, dekoj: 2*len
+     * @param {number} r ena radiuso, ĉe kiu komenciĝas ĉiu streko
+     */
+    static rskalo(id,min,max,da,i1=1,i2=5,i3=10,len=4,r=1) {
+        // strekoj de la skalo
+        let strekoj = '';
+        const di = da/360*2*Math.PI;
+        for (let i = 0; i<=(max-min); i+=i1) {
+            const x1 = Math.round(r * Math.cos(i*di)*10)/10;
+            const y1 = Math.round(r * Math.sin(i*di)*10)/10;
+            const l = 2*len - ((min+i)%i2? len/2:0) - ((min+i)%i3? len/2:0);
+            const x2 = Math.round((r+l) * Math.cos(i*di)*10)/10;
+            const y2 = Math.round((r+l) * Math.sin(i*di)*10)/10;
+
+            strekoj += `M${x1},${y1}L${x2},${y2}`;
+        }
+        return Lab.e("path",{
+            id: id,
+            d: strekoj,
+            class: "skalo"
+        });
+    }    
+
 }
 
 
