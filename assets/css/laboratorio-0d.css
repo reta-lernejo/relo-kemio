@@ -38,6 +38,12 @@
     fill: url(#vitro_konusa);
 }
 
+.hofmanaparato .vitro {
+    stroke: black;
+    stroke-width: 1.0;
+    fill: url(#vitro_konusa);
+}
+
 .hofmanaparato .ligtubo {
     stroke: black;
     stroke-width: 0.5;

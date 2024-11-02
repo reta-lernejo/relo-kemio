@@ -602,7 +602,7 @@ class LabBureto  extends LabUjo {
 }
 
 class LabHofmanAparato  extends LabUjo {
-    static tubdistanco = 80;
+    static tubdistanco = 100;
 
     /**
      * Kreas bureton
@@ -650,12 +650,16 @@ class LabHofmanAparato  extends LabUjo {
         const bordo_1 = (LabSVG.xy_pado(xj,yj)+'Q35,-70 32,-80Z')
             // iom artifika enŝovo de globkurboj
             .replace('L0,-30L8,-10','Q3,-30 8,-10') 
-            .replace('L40,-30L32,-50L32','Q37,-30 32,-50L32');
+            .replace('L40,-30L32,-50L32','Q37,-30 32,-50L32'); 
 
-        const bordo_2 = (LabSVG.xy_pado(LabSVG.kspegul(xj.reverse(),20),yj.reverse())+'Q5,-70 8,-60Z')
+        const bordo_2 = (LabSVG.xy_pado(LabSVG.kspegul(xj.reverse(),20),yj.reverse())+'Q12,-70 8,-60Z')
             // iom artifika enŝovo de globkurboj
             .replace('L0,-30L8,-10','Q3,-30 8,-10') 
-            .replace('L40,-30L32,-50L32','Q37,-30 32,-50L32');
+            .replace('L40,-30L32,-50L32','Q37,-30 32,-50L32'); 
+
+        const bordo_rezervujo = 
+            `M10,${-h-90}L12,${-h-70}Q-20,${-h-45} 10,${-h-20}L10,-80`
+          + `Q20,-74 30,-80L30,${-h-20}Q60,${-h-45} 28,${-h-70}L30,${-h-90}Z`;
             
         this.g = Lab.e("g",{
             id: id,
@@ -668,11 +672,17 @@ class LabHofmanAparato  extends LabUjo {
         const ujo_2 = Lab.e("path",{
             d: bordo_2,
             class: "vitro",
-            transform: `translate(${40+LabHofmanAparato.tubdistanco},0)`
+            transform: `translate(${LabHofmanAparato.tubdistanco+22},0)`
         });
+        const lt2 = LabHofmanAparato.tubdistanco/2;
         const ligtubo = Lab.e("path",{
-            d: `M30,-60q-5,-10 0,-20l${40+LabHofmanAparato.tubdistanco-20},0q5,10 0,20Z`,
+            d: `M30,-60q-5,-10 0,-20l${lt2-10},0q10,5 20,0l${lt2-10},0q5,10 0,20Z`,
             class: "ligtubo",
+        })
+        const rezervujo = Lab.e("path",{
+            d: bordo_rezervujo,
+            class: "vitro",
+            transform: `translate(${lt2+11},0)`
         })
 
         // skalo
@@ -694,7 +704,7 @@ class LabHofmanAparato  extends LabUjo {
         });
         // ŝovu la duan skalon je larĝeco (40) + tubdistanco
         Lab.a(skalo_2, {
-            transform: `translate(${40+LabHofmanAparato.tubdistanco},${-h})`
+            transform: `translate(${LabHofmanAparato.tubdistanco+22},${-h})`
         });
 
         // krano malfermita kaj fermita
@@ -711,7 +721,7 @@ class LabHofmanAparato  extends LabUjo {
         const krano_2 = Lab.e("path",{
             class: "krano",
             d: this.krano_fermita,
-            transform: `translate(${40+LabHofmanAparato.tubdistanco},${15-h})`
+            transform: `translate(${LabHofmanAparato.tubdistanco+22},${15-h})`
         });
 
         // enhavo
@@ -741,7 +751,7 @@ class LabHofmanAparato  extends LabUjo {
             this.g.append(limigo,enhavo);
         }
 
-        this.g.append(krano_1,krano_2,ujo_1,ujo_2,ligtubo,skalo_1,skalo_2);
+        this.g.append(krano_1,krano_2,ujo_1,ujo_2,ligtubo,rezervujo,skalo_1,skalo_2);
     }
 
     /**
