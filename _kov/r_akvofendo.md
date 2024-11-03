@@ -46,9 +46,32 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
 
     // bureto supre
     aparato = Lab.hofmanaparato("hofman",100); // elfluo = 100ml, t.e. malplena
-    lab.metu(aparato,{id: "supre", x:X_HOFMANN, y:ALTO-20});
+
     voltmetro = new LabMezurilo("voltmetro",30,"V");
-    lab.metu(voltmetro,{id: "voltmetro", x:10, y:ALTO-90})
+
+    // dratoj por kunligi la elekjtrodojn kun la voltmetro
+    const drato_plus = new LabIlo("drato_plus");
+    drato_plus.g = Lab.e("g",{id: "drato_plus"});
+    drato_plus.g.append(
+      Lab.e("path",{
+            d: `M${10+120},${ALTO-90+20+1}Q160,${ALTO-90+20+2} 170,${ALTO-35}Q170,${ALTO-10} ${X_HOFMANN+8},${ALTO-10}`,
+            class: "drato_plus"
+        })
+    );
+
+    const drato_minus = new LabIlo("drato_minus");
+    drato_minus.g = Lab.e("g",{id: "drato_minus"});
+    drato_minus.g.append(
+      Lab.e("path",{
+            d: `M${10+120},${ALTO-90+60+2}Q180,${ALTO-90+60} 270,${ALTO-20}L${X_HOFMANN+130},${ALTO-10}`,
+            class: "drato_minus"
+        })
+    );
+
+    lab.metu(drato_minus,{id:'drato_minus',x:0,y:0});
+    lab.metu(drato_plus,{id:'drato_minus',x:0,y:0});
+    lab.metu(voltmetro,{id: "voltmetro", x:10, y:ALTO-90});
+    lab.metu(aparato,{id: "supre", x:X_HOFMANN, y:ALTO-20});
 
   });
 </script>
@@ -65,10 +88,20 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
       .klemo_1 {
           /*fill: crimson;*/
           fill: url(#klemo_plus);
-        }
+      }
       .klemo_2 {
           fill: url(#klemo_minus);
-        }
+      }
+      .drato_plus {
+        fill: none;
+        stroke-width: 2;
+        stroke: crimson;
+      }
+      .drato_minus {
+        fill: none;
+        stroke-width: 2;
+        stroke: #223;
+      }
       .ŝaltilo rect {
         stroke: #ccc;
         fill: #ddf;
