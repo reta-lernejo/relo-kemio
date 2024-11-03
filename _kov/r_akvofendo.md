@@ -89,12 +89,14 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
       .butono.premita rect {
         fill: #004b4b;
       }
+      .likvo {
+        fill: hsla(236, 14%, 75%, 0.4);
+      }
       .klemo_1 {
-          /*fill: crimson;*/
-          fill: url(#klemo_plus);
+        fill: url(#klemo_plus);
       }
       .klemo_2 {
-          fill: url(#klemo_minus);
+        fill: url(#klemo_minus);
       }
       .drato_plus {
         fill: none;

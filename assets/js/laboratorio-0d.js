@@ -628,7 +628,8 @@ class LabHofmanAparato  extends LabUjo {
         const h=300;
         super(id);
         this.ml = ml;
-        this.nulo = h-20; // y-pozicio de skalo=0 mezurite de ellaso
+        this.nulo = h+30; // y-pozicio de maksimuma pleniĝo de dekstra/maldekstra tubo
+        this.rnulo = h+90; // y-pozicio de maksimua peniĝo de la rezervujo
 
         // ujo el du tuboj kaj interligo
         // x-koordinatoj komencantaj ĉe la interligo de la maldekstra tubo   
@@ -775,7 +776,8 @@ class LabHofmanAparato  extends LabUjo {
             const c_id_2 = `_clp2_${id}`;
             const limigo_2 = Lab.limigo(c_id_2, 
                 Lab.e("path",{
-                    d: bordo_2
+                    d: bordo_2,
+                    transform: `translate(${LabHofmanAparato.tubdistanco+22},0)`
                 })
             );
 
@@ -796,15 +798,45 @@ class LabHofmanAparato  extends LabUjo {
             });
             const enhavo_2 = Lab.e("rect",
             {
-                x: LabHofmanAparato.tubdistanco+22,
+                x: LabHofmanAparato.tubdistanco+30,
                 y: -this.nulo + 4*ml,
                 width: 24,
                 height: this.nulo -4*ml, // 0-streko - gasa enhavo en ml
                 class: "likvo likvo_2",
                 "clip-path": `url(#${c_id_2})`,
             });
+      
             this.g.append(limigo_1,enhavo_1,limigo_2,enhavo_2);
         }
+
+            // enhavo de ligtubo
+            const enhavo_l = Lab.e("rect",
+            {
+                x: 32,
+                y: -80,
+                width: LabHofmanAparato.tubdistanco,
+                height: 20, // 0-streko - gasa enhavo en ml
+                class: "likvo likvo_l"
+            });              
+        
+            // enhavo de rezervujo
+            const c_id_r = `_clpr_${id}`;
+            const limigo_r = Lab.limigo(c_id_r, 
+                Lab.e("path",{
+                    d: bordo_rezervujo,
+                    transform: `translate(${lt2+11},0)`
+                })
+            );
+            const enhavo_r = Lab.e("rect",
+            {
+                x: lt2+5,
+                y: -this.rnulo + 10, //4*ml,
+                width: 52,
+                height: this.rnulo-75-4*ml, // 0-streko - gasa enhavo en ml
+                class: "likvo likvo_r",
+                "clip-path": `url(#${c_id_r})`,
+            });              
+            this.g.append(limigo_r,enhavo_r,enhavo_l);
 
         this.g.append(krano_1,krano_2,elektrodo_plus,elektrodo_minus,
             ujo_1,ujo_2,ligtubo,rezervujo,skalo_1,skalo_2,
