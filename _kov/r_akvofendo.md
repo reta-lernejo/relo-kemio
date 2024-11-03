@@ -25,7 +25,6 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
 ## Malkombino de akvo
 {: .sekcio}
 
-
 <script>
 
   const eksperimentoj = {
@@ -62,6 +61,21 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     <![CDATA[
       .butono.premita rect {
         fill: #004b4b;
+      }
+      .klemo_1 {
+          /*fill: crimson;*/
+          fill: url(#klemo_plus);
+        }
+      .klemo_2 {
+          fill: url(#klemo_minus);
+        }
+      .ŝaltilo rect {
+        stroke: #ccc;
+        fill: #ddf;
+      }
+      .ŝaltilo text {
+        fill: #112;
+        font-size: 11pt;
       }
     ]]>
   </style>

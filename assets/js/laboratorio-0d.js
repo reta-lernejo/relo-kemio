@@ -1124,7 +1124,17 @@ class LabMezurilo extends LabIlo {
             transform: `rotate(-30 ${O[0]} ${O[1]})`,
             class: "montrilo"
         });
-        cplato.append(tx,montrilo);
+        const ŝaltilo = Lab.butono('⏻',w-24,h-24,20,20,8);
+        Lab.a(ŝaltilo,{class: "ŝaltilo butono"});
+        const klemo1 = Lab.e("path",{
+            d: `M${w},${h/4}l4,0l0,5l-4,0z`,
+            class: "klemo klemo_1"
+        });
+        const klemo2 = Lab.e("path",{
+            d: `M${w},${h*3/4}l4,0l0,5l-4,0z`,
+            class: "klemo klemo_2"
+        });
+        cplato.append(tx,montrilo,ŝaltilo,klemo1,klemo2);
         this.g = cplato;
     }
 

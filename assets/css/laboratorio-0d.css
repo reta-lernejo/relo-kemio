@@ -122,6 +122,11 @@
     stroke-linecap: round;
 }
 
+.ciferplato .ŝaltilo {
+    border: 2px solid blue;
+    background: yellow;
+}
+
 .diagramo .fono {
     fill: #fafafa;
 }
