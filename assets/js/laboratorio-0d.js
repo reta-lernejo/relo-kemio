@@ -570,6 +570,8 @@ class LabBureto  extends LabUjo {
      * Metas/remetas la enhavon al ml, 50ml = 0-linio
      */
     enhavo(ml=50) {
+        if (ml<50) throw "Programeraro, enhavmeto alia ol 50ml ne jam realigita!"
+        // metu al 0-linio (50ml)
         this.ml = -1;
         this.elfluo(1);
     }
@@ -680,11 +682,11 @@ class LabHofmanAparato  extends LabUjo {
         });
         const ujo_1 = Lab.e("path",{
             d: bordo_1,
-            class: "vitro"
+            class: "vitro ujo_1"
         });
         const ujo_2 = Lab.e("path",{
             d: bordo_2,
-            class: "vitro",
+            class: "vitro ujo_2",
             transform: `translate(${LabHofmanAparato.tubdistanco+22},0)`
         });
         const lt2 = LabHofmanAparato.tubdistanco/2;
@@ -727,12 +729,12 @@ class LabHofmanAparato  extends LabUjo {
             + `L39,-35 L36,-35 L34,-42 L32,-42 L30,-40 L10,-40 Z`;
 
         const krano_1 = Lab.e("path",{
-            class: "krano",
+            class: "krano krano_1",
             d: this.krano_fermita,
             transform: `translate(0,${15-h})`
         });
         const krano_2 = Lab.e("path",{
-            class: "krano",
+            class: "krano krano_2",
             d: this.krano_fermita,
             transform: `translate(${LabHofmanAparato.tubdistanco+22},${15-h})`
         });
@@ -764,10 +766,16 @@ class LabHofmanAparato  extends LabUjo {
 
         // enhavo
         if (ml>=0) {           
-            const c_id = `_clp_${id}`;
-            const limigo = Lab.limigo(c_id, 
+            const c_id_1 = `_clp1_${id}`;
+            const limigo_1 = Lab.limigo(c_id_1, 
                 Lab.e("path",{
                     d: bordo_1
+                })
+            );
+            const c_id_2 = `_clp2_${id}`;
+            const limigo_2 = Lab.limigo(c_id_2, 
+                Lab.e("path",{
+                    d: bordo_2
                 })
             );
 
@@ -777,16 +785,25 @@ class LabHofmanAparato  extends LabUjo {
             // aliokaze oni devus ekzakte elkalkuli la
             // altecon de la likvaĵo en la botelo depende
             // de klino, kio estus sufiĉe ambicia entrepreno :-)
-            const enhavo = Lab.e("rect",
+            const enhavo_1 = Lab.e("rect",
             {
                 x: 8,
                 y: -this.nulo + 4*ml,
                 width: 24,
-                height: this.nulo -4*ml, // 0-streko - elfluitaj ml
-                class: "likvo",
-                "clip-path": `url(#${c_id})`,
+                height: this.nulo -4*ml, // 0-streko - gasa enhavo en ml
+                class: "likvo likvo_1",
+                "clip-path": `url(#${c_id_1})`,
             });
-            this.g.append(limigo,enhavo);
+            const enhavo_2 = Lab.e("rect",
+            {
+                x: LabHofmanAparato.tubdistanco+22,
+                y: -this.nulo + 4*ml,
+                width: 24,
+                height: this.nulo -4*ml, // 0-streko - gasa enhavo en ml
+                class: "likvo likvo_2",
+                "clip-path": `url(#${c_id_2})`,
+            });
+            this.g.append(limigo_1,enhavo_1,limigo_2,enhavo_2);
         }
 
         this.g.append(krano_1,krano_2,elektrodo_plus,elektrodo_minus,
@@ -797,48 +814,55 @@ class LabHofmanAparato  extends LabUjo {
     /**
      * Redonas la element-rekonilon (id) kaj la relativajn koordinatojn de la pinto
      */
-    pinto() {
+    pinto(dekstra = false) {
         // alternative ni povus transdoni la ujo-grupon forlasante la pinto-elementon, 
         // la ujo momente ne havas .id
         return {
             id: this.id,
-            x:20,
-            y:0
+            x: 20 + (dekstra? LabHofmanAparato.tubdistanco+22 : 0),
+            y: -h-75
         };
     }
 
     /**
-     * Redonas la kranon kiel SVGElement
+     * Redonas kranon kiel SVGElement
      */
-    krano() {
-        return this.g.querySelector(".krano");
+    krano(dekstra = false) {
+        if (!dekstra)
+            return this.g.querySelector(".krano_1");
+        else
+            return this.g.querySelector(".krano_2")
     }
 
     /**
-     * Redonas la ujon kiel SVGElement
+     * Redonas la maldekstran aŭ dekstran ujon kiel SVGElement
      */
-    ujo() {
-        return this.g.querySelector(".vitro");
+    ujo(dekstra = false) {        
+        if (!dekstra)
+            return this.g.querySelector(".ujo_1");
+        else
+            return this.g.querySelector(".ujo_2");
     }
 
     /**
-     * Metas/remetas la enhavon al ml, 50ml = 0-linio
+     * Metas/remetas la gasenhavon al (0) ml
      */
-    enhavo(ml=50) {
+    enhavo(ml=0, dekstra=false) {
+        if (ml<0) throw "Programeraro, enhavmeto alia ol 0ml ne jam realigita!"
+        // metu al 0-linio (50ml)
         this.ml = -1;
-        this.elfluo(1);
+        this.etendo(1);
     }
 
     /**
-     * Reduktas la enhavon
-     * @param {number} ml tiom da ml la enhavo reduktiĝas
+     * Etendas la gasan enhavon supre de la tubo je ml
+     * @param {number} ml tiom da ml la gasa enhavo eniĝas
      */
-    elfluo(ml=1) {
-        if (this.ml<60) {
-            //console.log(`bureto ${this.id}: ${this.ml} - ${ml}`);
-            this.ml += ml; // sume elfluinta volumeno en ml
+    etendo(ml=1, dekstra=false) {
+        if (this.ml<50) {
+            this.ml += ml; // sume aldonita gasa volumeno en ml
 
-            const enh = this.g.querySelector(".likvo");
+            const enh = this.g.querySelector(dekstra?".likvo_2":".likvo_1");
             Lab.a(enh, {
                 y: -this.nulo + 4*this.ml,
                 height: this.nulo -4*this.ml

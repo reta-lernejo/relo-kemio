@@ -45,7 +45,7 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     lab = new Laboratorio(ĝi("#eksperimento"),"fono",LARĜO,ALTO+10);
 
     // hofmann-aparato
-    aparato = Lab.hofmanaparato("hofman",100); // elfluo = 100ml, t.e. malplena
+    aparato = Lab.hofmanaparato("hofman",1); // elfluo = 100ml, t.e. malplena
     // du provtubojp por kapti gason
     ptubo1 = Lab.provtubo("provtubo_1",0,15,80,175);
     ptubo2 = Lab.provtubo("provtubo_2",0,15,80,182);
