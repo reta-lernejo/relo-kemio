@@ -44,9 +44,12 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
   lanĉe(()=>{
     lab = new Laboratorio(ĝi("#eksperimento"),"fono",LARĜO,ALTO+10);
 
-    // bureto supre
+    // hofmann-aparato
     aparato = Lab.hofmanaparato("hofman",100); // elfluo = 100ml, t.e. malplena
-
+    // du provtubojp por kapti gason
+    ptubo1 = Lab.provtubo("provtubo_1",0,15,80,175);
+    ptubo2 = Lab.provtubo("provtubo_2",0,15,80,182);
+    // tensimezurilo
     voltmetro = new LabMezurilo("voltmetro",30,"V");
 
     // dratoj por kunligi la elekjtrodojn kun la voltmetro
@@ -71,8 +74,9 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     lab.metu(drato_minus,{id:'drato_minus',x:0,y:0});
     lab.metu(drato_plus,{id:'drato_minus',x:0,y:0});
     lab.metu(voltmetro,{id: "voltmetro", x:10, y:ALTO-90});
-    lab.metu(aparato,{id: "supre", x:X_HOFMANN, y:ALTO-20});
-
+    lab.metu(aparato,{id: "malsupre", x:X_HOFMANN, y:ALTO-20});
+    lab.metu(ptubo1,{id: "maldekstre", x:X_HOFMANN, y: -95});
+    lab.metu(ptubo2,{id: "dekstre", x:X_HOFMANN+140, y: -95});
   });
 </script>
 

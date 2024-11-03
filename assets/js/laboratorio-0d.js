@@ -203,8 +203,21 @@ class LabProvtubo extends LabGlaso {
      * @param w {number} larĝeco, apriore 100
      * @param h {number} alteco, apriore 300
      */
-    constructor(id, w=25, h=150) {
+    constructor(id, w=25, h=150, klino=0) {
         super(id,w,h);
+
+        // ĉe klinita tubo ni forigas la ombron 
+        // kaj devas enmeti la turnitan grupon en alian
+        // ni momente ne konsideras enhavon ĉe klino kiel ĉe gutbotelo!
+        if (klino) {
+            //const a = (klino+360)%360; // tolerante negativajn angulojn
+            const g1 = Lab.e("g",{
+                transform: `rotate(${klino} ${w/2} ${h})`
+            });
+            this.g.querySelector(".ombro").remove();
+            g1.append(...this.g.children)
+            this.g.append(g1)
+        }
     }
 }
 
@@ -1607,8 +1620,8 @@ class Lab {
      * @param h {number} alteco, apriore 300
      * @param enhavo {object} aŭ nombro donate procentaĵon de pleneco aŭ SVG-objekto reprezentanta la enhavon
      */
-    static provtubo(id="glaso", enhavo, w=25, h=150) {
-        const tubo = new LabProvtubo(id, w, h);
+    static provtubo(id="glaso", enhavo, w=25, h=150, klino=0) {
+        const tubo = new LabProvtubo(id, w, h, klino);
         if (enhavo) tubo.enhavo(enhavo);
         return tubo;
     }
@@ -2009,11 +2022,11 @@ class Laboratorio extends LabSVG {
     }
 
     /**
-     * Movas ilon de unu al alia loko, se refaru estas 'true' ni forigas kaj rekreas la objekton
-     * per nova ilo (necesa ekz. se ni klinas, malplenigas botelon k.s.)
+     * Movas ilon de unu al alia loko.
+     * Ni forigas kaj rekreas la objekton
+     * per nova ilo,se donita (necesa ekz. se ni klinas, malplenigas botelon k.s.)
      * @param {*} ilo
      * @param {string} loko_al
-     * @param {boolean} refaru
      * @param {object} nova_ilo
      */
     movu(ilo,loko_al,nova_ilo) {

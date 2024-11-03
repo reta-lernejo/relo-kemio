@@ -363,7 +363,7 @@ eksperimentoj:
     const nova = Lab.gutbotelo(botl.id,subst+"\n(aq)",botl.pleno,ra);
 
     nova.stato = 1; // levita
-    nova.maldekstre = botl.maldekstre;
+    nova.maldekstre = botl.maldekstre; // jes|ne
     lab.klak_reago(nova,botel_verŝo);
 
     lab.movu(botl,botl.maldekstre?"LM":"LD",nova)
