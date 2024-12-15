@@ -73,6 +73,8 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
 
     // keno por testo
     keno = new LabKeno("keno",4,150,5);
+    // kandelo por testo
+    kandelo = new LabKandelo("kandelo",40,16);
 
     lab.metu(drato_minus,{id:'drato_minus',x:0,y:0});
     lab.metu(drato_plus,{id:'drato_minus',x:0,y:0});
@@ -80,7 +82,8 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     lab.metu(aparato,{id: "malsupre", x:X_HOFMANN, y:ALTO-20});
     lab.metu(ptubo1,{id: "maldekstre", x:X_HOFMANN, y: -95});
     lab.metu(ptubo2,{id: "dekstre", x:X_HOFMANN+140, y: -95});
-    lab.metu(keno,{id: "keno", x:X_HOFMANN+210, y:ALTO-20});
+    lab.metu(keno,{id: "keno", x:X_HOFMANN+190, y:ALTO-20});
+    lab.metu(kandelo,{id: "kandelo", x:X_HOFMANN+230, y:ALTO-20});
   });
 </script>
 
@@ -130,10 +133,29 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
       <stop offset="100%" stop-color="#524a35" />
     </linearGradient>
 
+
+    <linearGradient id="vakso">
+      <stop offset="0%" stop-color="#8e8c81" />
+      <stop offset="45%" stop-color="#fffcf6"/>
+      <stop offset="100%" stop-color="#6b6a61" />
+    </linearGradient>
+        
+    <radialGradient id="flamo" cx="50%" cy="110%" r="105%">
+      <stop offset="0%" stop-color="red" stop-opacity="0%"/>
+      <stop offset="35%" stop-color="#cdb2f9" stop-opacity="30%"/>
+      <stop offset="40%" stop-color="red" stop-opacity="40%"/>
+      <stop offset="95%" stop-color="gold" stop-opacity="60%"/>
+      <stop offset="100%" stop-color="#cdb2f9" stop-opacity="10%"/>
+    </radialGradient>
+    
     <filter id="svago" x="-20%" y="-20%" width="140%" height="140%">    
       <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
     </filter>
-    
+   
+    <filter id="svago2" x="-20%" y="-20%" width="140%" height="140%">    
+      <feGaussianBlur in="SourceGraphic" stdDeviation="0.2" />
+    </filter>    
+
     <filter id="ardo" x="-100%" y="-100%" width="300%" height="300%">    
       <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
     </filter>

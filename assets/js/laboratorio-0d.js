@@ -1126,9 +1126,6 @@ class LabKeno extends LabIlo {
     // https://vanseodesign.com/web-design/svg-filter-element/
     // ?? https://stackoverflow.com/questions/71681854/svg-filters-outside-of-a-bounding-box-clip-path-shape
     // ligno: https://www.youtube.com/watch?v=ta27MvP1AE8
-    // por kandelo... (poste)
-    // flamo: https://stackoverflow.com/questions/34022783/understanding-how-a-candle-flame-is-created-in-a-simple-svg
-
 
     /**
      * Kreas lignostangeton kun ardo - por testo je oksigeno
@@ -1137,13 +1134,13 @@ class LabKeno extends LabIlo {
      * @param {number} h alto
      * @param {number} klino klinangulo
      */
-    constructor(id,w=4,h=200,klino=4,intenso=1,ardkoloro='#ffdddd') {
+    constructor(id,w=4,h=200,klino=4) {
         super(id);
         this.g = Lab.e("g", {
-            id: id,
-            class: "vitro"});
+            id: id
+        });
             
-        // ene grupo
+        // ena grupo
         const g1 = Lab.e("g",{});
 
         // bastono 
@@ -1212,7 +1209,7 @@ class LabKeno extends LabIlo {
             fill: "freeze",
         });  
         
-        // kunig ĉiujn elementojn
+        // kunigu ĉiujn elementojn
         a.append(a1,a2);
         g1.append(b,e1,e2,e3,a);
 
@@ -1222,6 +1219,105 @@ class LabKeno extends LabIlo {
                 transform: `rotate(${klino})`
             });
         };
+        this.g.append(g1);
+    }
+}
+
+class LabKandelo extends LabIlo {
+    // por kandelo... (poste)
+    // flamo: https://stackoverflow.com/questions/34022783/understanding-how-a-candle-flame-is-created-in-a-simple-svg
+
+    /**
+     * Kreas lignostangeton kun ardo - por testo je oksigeno
+     * @param {string} id identigilo (nomo) de la keno
+     * @param {number} w larĝo
+     * @param {number} h alto
+     */
+    constructor(id,w=14,h=100) {
+        super(id);
+        this.g = Lab.e("g", {
+            id: id
+        });
+            
+        // ena grupo
+        const g1 = Lab.e("g",{});
+
+        // vakso 
+        const v = Lab.e("rect",{
+            y: -h,
+            width: w,
+            height: h,
+            fill: "url(#vakso)"
+        });
+  
+        // meĉo 
+        const m = Lab.e("path", {
+            d: `M${w/2},${-h} Q${w/2},${-h-7} ${w/2-2},${-h-5}`,
+            "stroke-width": 1.2,
+            stroke: "black",
+            fill: "none"
+        });
+
+        // flamo 
+        const p1 = `M${w/2-3},${-h-2} Q${w/2-3},${-h-22} ${w/2},${-h-25} Q${w/2+5},${-h-22} ${w/2+3},${-h-2}`;
+        const p2 = `M${w/2-3},${-h-2} Q${w/2-2},${-h-20} ${w/2+2},${-h-23} Q${w/2+8},${-h-20} ${w/2+3},${-h-2}`;
+        const f = Lab.e("path", {
+            d: p1,
+            fill: "url(#flamo)",
+            filter: "url(#svago2)"
+        });
+        const fa1 = Lab.e("animate", {
+            id: "blovo",
+            attributeName: "d",
+            from: p1,
+            to: p2,
+            dur: "1s",
+            begin: "0s; ree.end",
+            fill: "freeze"
+        });
+        const fa2 = Lab.e("animate", {
+            id: "ree",
+            attributeName: "d",
+            from: p2,
+            to: p1,
+            dur: "12s",
+            begin: "blovo.end",
+            fill: "freeze"
+        });
+        f.append(fa1,fa2);
+  
+        // brilo 
+        const b = Lab.e("ellipse",{
+            cx: w/2+2,
+            cy: -h-15,
+            rx: 10,
+            ry: 35,
+            fill: "rgba(255,229,103,33%)",
+            filter: "url(#ardo)"
+        });
+        const ba1 = Lab.e("animate", {
+            id: "kresko",
+            attributeName: "ry",
+            from: "12",
+            to: "18",
+            dur: "1s",
+            begin: "0s; malkresko.end",
+            fill: "freeze"
+        });
+        const ba2 = Lab.e("animate", {
+            id: "malkresko",
+            attributeName: "ry",
+            from: "18",
+            to: "12",
+            dur: "2s",
+            begin: "kresko.end",
+            fill: "freeze"
+        });
+        b.append(ba1,ba2);
+
+        // kunigu ĉion
+        g1.append(v,m,f,b);
+
         this.g.append(g1);
     }
 }
