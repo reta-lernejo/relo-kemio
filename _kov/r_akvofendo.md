@@ -71,12 +71,16 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
         })
     );
 
+    // keno por testo
+    keno = new LabKeno("keno",4,150,5);
+
     lab.metu(drato_minus,{id:'drato_minus',x:0,y:0});
     lab.metu(drato_plus,{id:'drato_minus',x:0,y:0});
     lab.metu(voltmetro,{id: "voltmetro", x:10, y:ALTO-90});
     lab.metu(aparato,{id: "malsupre", x:X_HOFMANN, y:ALTO-20});
     lab.metu(ptubo1,{id: "maldekstre", x:X_HOFMANN, y: -95});
     lab.metu(ptubo2,{id: "dekstre", x:X_HOFMANN+140, y: -95});
+    lab.metu(keno,{id: "keno", x:X_HOFMANN+210, y:ALTO-20});
   });
 </script>
 
@@ -118,6 +122,22 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
       }
     ]]>
   </style>
+
+  <defs>
+    <linearGradient id="ligno">
+      <stop offset="0%" stop-color="#d0be8e" />
+      <stop offset="40%" stop-color="#f5e7c0"/>
+      <stop offset="100%" stop-color="#524a35" />
+    </linearGradient>
+
+    <filter id="svago" x="-20%" y="-20%" width="140%" height="140%">    
+      <feGaussianBlur in="SourceGraphic" stdDeviation="1" />
+    </filter>
+    
+    <filter id="ardo" x="-100%" y="-100%" width="300%" height="300%">    
+      <feGaussianBlur in="SourceGraphic" stdDeviation="5" />
+    </filter>
+  </defs>  
 </svg>
 
 

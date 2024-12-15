@@ -1,3 +1,84 @@
+// grep -E "class |^\s+[a-z_]+\(.*\)\s*\{" laboratorio-0d.js
+// 
+// class LabSVG {
+//     constructor(svg) {
+//     trovu(elektilo) {
+//     ŝovu(elm, x, y=0) {
+//     simbol_uzo(id,x,y) {
+//     difinoj() {
+// class LabIlo {
+//     constructor(id) {
+// class LabUjo extends LabIlo {
+//     constructor(id) {
+// class LabGlaso extends LabUjo {
+//     constructor(id, w=100, h=200) {
+//     enhavo(enh,aldone) {
+//     surfaco() {
+//     enhavlimigo(elektilo = "path.likvo") {
+// class LabProvtubo extends LabGlaso {
+//     constructor(id, w=25, h=150, klino=0) {
+// class LabGutbotelo extends LabUjo {
+//     constructor(id,etikedo,pleno=0,klino=0) {
+//     pinto() {
+// class LabKonusFlakono extends LabUjo {
+//     constructor(id,pleno=0,w=100,h=200) {
+//     enhavo(ml) {
+//     enhavalto(ml) {
+//     surfaco() {
+//     enfluo(ml) {
+// class LabBureto  extends LabUjo {
+//     constructor(id,ml=0) {
+//     pinto() {
+//     krano() {
+//     ujo() {
+//     enhavo(ml=50) {
+//     elfluo(ml=1) {
+//     malfermu() {
+//     fermu() {
+// class LabHofmanAparato  extends LabUjo {
+//     constructor(id,ml=0) {
+//     pinto(dekstra = false) {
+//     krano(dekstra = false) {
+//     ujo(dekstra = false) {        
+//     enhavo(ml=0, dekstra=false) {
+//     etendo(ml=1, dekstra=false) {
+//     malfermu() {
+//     fermu() {
+// class LabFalaĵo {
+//     constructor(id,cls="precipito",ero1,ero2,bordo,w=100,h=100) {
+// class LabBastono extends LabIlo {
+//     constructor(id,w=5,h=200,klino=4) {
+// class LabSondilo extends LabIlo {
+//     constructor(id,w=5,h=200,klino=4,teksto='') {
+//     valoro(val) {
+// class LabCiferplato extends LabIlo {
+//     constructor(id,w=60,h=30,r=5,teksto='') {
+//     valoro(val) {
+// class LabMezurilo extends LabIlo {
+//     constructor(id,max,unuo='',w=120,h=80,r=5) {
+//     valoro(val) {
+// class LabPHIndikilo extends LabIlo {
+//     constructor(id,r,min=1,max=14) {
+//     makulo(pH,nevidebla) {
+// class LabDiagramo extends LabIlo {
+//     constructor(id,X,Y,w=300,h=200) {
+//     xy_pt(x,y) {
+//     punkto(x,y,h) {
+//     teksto(x,y,t) {
+//     viŝu() {
+// class Lab {
+// class Laboratorio extends LabSVG {
+//     constructor(svg,f_id,f_w,f_h) {
+//     nova_loko(loko) {
+//     nova_ilo(ilo) {
+//     butono(teksto,x,y,w,h,r=3) {
+//     klak_reago(ilo,reago) {
+//     okupita(_loko) {
+//     metu(ilo,loko) {
+//     movu(ilo,loko_al,nova_ilo) {
+//     ero_smb(id,r,cls="ero") {
+//     gutoj(gutoj_id,ero_id,n,fonto,celo,fine) {
+ 
 
 class LabSVG {
     
@@ -1037,6 +1118,111 @@ class LabBastono extends LabIlo {
             });
         };
         this.g.append(r);
+    }
+}
+
+class LabKeno extends LabIlo {
+    // ardo: https://stackoverflow.com/questions/54112231/is-it-possible-to-create-a-glow-effect-in-svg
+    // https://vanseodesign.com/web-design/svg-filter-element/
+    // ?? https://stackoverflow.com/questions/71681854/svg-filters-outside-of-a-bounding-box-clip-path-shape
+    // ligno: https://www.youtube.com/watch?v=ta27MvP1AE8
+    // por kandelo... (poste)
+    // flamo: https://stackoverflow.com/questions/34022783/understanding-how-a-candle-flame-is-created-in-a-simple-svg
+
+
+    /**
+     * Kreas lignostangeton kun ardo - por testo je oksigeno
+     * @param {string} id identigilo (nomo) de la keno
+     * @param {number} w larĝo
+     * @param {number} h alto
+     * @param {number} klino klinangulo
+     */
+    constructor(id,w=4,h=200,klino=4,intenso=1,ardkoloro='#ffdddd') {
+        super(id);
+        this.g = Lab.e("g", {
+            id: id,
+            class: "vitro"});
+            
+        // ene grupo
+        const g1 = Lab.e("g",{});
+
+        // bastono 
+        const b = Lab.e("rect",{
+            y: -h,
+            width: w,
+            height: h,
+            fill: "url(#ligno)"
+        });
+
+        // arda pinto
+        const e1 = Lab.e("ellipse",{
+            cx: 5/8*w,
+            cy: -h,
+            rx: 1/2*w,
+            ry: 7/4*w,
+            fill: "black",
+            filter: "url(#svago)"
+        });
+        const e2 = Lab.e("ellipse",{
+            cx: 19/40*w,
+            cy: -h,
+            rx: 18/40*w,
+            ry: 1*w,
+            fill: "red",
+            filter: "url(#svago)"
+        });
+        const e3 = Lab.e("ellipse",{
+            cx: 1/2*w,
+            cy: -h+1,
+            rx: 17/40*w,
+            ry: 7/8*w,
+            fill: "#ffffcf",
+            filter: "url(#svago)"
+        });
+
+        // ardbrilo
+        const a = Lab.e("ellipse",{
+            cx: 1/2*w,
+            cy: -h+5,
+            rx: 10,
+            ry: 12,
+            fill: "rgba(255,190,3,33%)",
+            filter: "url(#ardo)"
+        });
+
+        const a1 = Lab.e("animate",{
+            id: "kresko",
+            //attributeType: "XML",
+            attributeName: "ry",
+            from: "12",
+            to: "20",
+            dur: "1s",
+            begin: "0s; malkresko.end",
+            fill: "freeze",
+        });
+
+        const a2 = Lab.e("animate",{
+            id: "malkresko",
+            //attributeType: "XML",
+            attributeName: "ry",
+            from: "20",
+            to: "12",
+            dur: "2s",
+            begin: "kresko.end",
+            fill: "freeze",
+        });  
+        
+        // kunig ĉiujn elementojn
+        a.append(a1,a2);
+        g1.append(b,e1,e2,e3,a);
+
+        // aldonu klinon
+        if (klino) {
+            Lab.a(g1,{
+                transform: `rotate(${klino})`
+            });
+        };
+        this.g.append(g1);
     }
 }
 
