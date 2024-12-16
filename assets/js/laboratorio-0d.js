@@ -204,7 +204,7 @@ class LabGlaso extends LabUjo {
      * 
      */
     enhavo(enh,aldone) {
-        const glaso_id = `_glaso_${this.id}`;
+        //const glaso_id = `_glaso_${this.id}`;
         const enh_id = `_glaso_${this.id}_enhavo`;
 
         let nova_enh = enh;
@@ -709,8 +709,8 @@ class LabHofmanAparato  extends LabUjo {
         const h=300;
         super(id);
         this.ml = ml;
-        this.nulo = h+30; // y-pozicio de maksimuma pleniĝo de dekstra/maldekstra tubo
-        this.rnulo = h+90; // y-pozicio de maksimua peniĝo de la rezervujo
+        this.nulo = h+30; // y-pozicio de maksimuma pleniĝo de dekstra/maldekstra tubo (skala 0 estas ĉe h)
+        this.rnulo = h+90; // y-pozicio de maksimua pleniĝo de la meza rezervujo
 
         // ujo el du tuboj kaj interligo
         // x-koordinatoj komencantaj ĉe la interligo de la maldekstra tubo   
@@ -757,11 +757,52 @@ class LabHofmanAparato  extends LabUjo {
         const bordo_rezervujo = 
             `M10,${-h-90}L12,${-h-70}Q-20,${-h-45} 10,${-h-20}L10,-80`
           + `Q20,-74 30,-80L30,${-h-20}Q60,${-h-45} 28,${-h-70}L30,${-h-90}Z`;
-            
+
+        // helpfunkcio por krei enhavon dekstre/maldekstre
+        this.enh = function(ujo="1") {
+            const c_id = `_clp${ujo}_${id}`;
+            const bordo = ujo=="1"? bordo_1: bordo_2;
+
+            // kreu limigon por la enhavo
+            const le = Lab.e("path",{
+                d: bordo
+            });
+            if (ujo=="2") {
+                Lab.a(le, {
+                    transform: `translate(${LabHofmanAparato.tubdistanco+22},0)`
+                });
+            }
+            const limigo = Lab.limigo(c_id, le);
+
+            // likva enhavo, ĝi ne ekzakte respondas
+            // al la volumeno de cilindro, aparte por
+            // oblikvaj anguloj, sed proksimumo eble sufiĉas
+            // aliokaze oni devus ekzakte elkalkuli 
+            const enh_id = `enhavo_${ujo}_hofman`;
+            const x =  ujo=="1"? 8 : LabHofmanAparato.tubdistanco+30;
+
+            const ge = Lab.e("g", {
+                id: enh_id,
+                "clip-path": `url(#${c_id})`
+            });
+            const enhavo = Lab.e("rect",
+            {
+                x: x,
+                y: -this.nulo + 4*ml,
+                width: 24,
+                height: this.nulo -4*ml, // gasa enhavo en ml sub la krano
+                class: `likvo likvo_${ujo}`
+            });
+            ge.append(enhavo);
+            this.g.append(limigo,ge);
+        }.bind(this);
+
+        // la ĉefa grupo de la aparato
         this.g = Lab.e("g",{
             id: id,
             class: "ujo hofmanaparato"
         });
+        // maldekstra kaj dekstra ujoj
         const ujo_1 = Lab.e("path",{
             d: bordo_1,
             class: "vitro ujo_1"
@@ -771,11 +812,13 @@ class LabHofmanAparato  extends LabUjo {
             class: "vitro ujo_2",
             transform: `translate(${LabHofmanAparato.tubdistanco+22},0)`
         });
+        // horizontala ligtubo
         const lt2 = LabHofmanAparato.tubdistanco/2;
         const ligtubo = Lab.e("path",{
             d: `M30,-60q-5,-10 0,-20l${lt2-10},0q10,5 20,0l${lt2-10},0q5,10 0,20Z`,
             class: "ligtubo",
-        })
+        });
+        // meza rezevujo
         const rezervujo = Lab.e("path",{
             d: bordo_rezervujo,
             class: "vitro",
@@ -847,77 +890,38 @@ class LabHofmanAparato  extends LabUjo {
         });
 
         // enhavo
-        if (ml>=0) {           
-            const c_id_1 = `_clp1_${id}`;
-            const limigo_1 = Lab.limigo(c_id_1, 
-                Lab.e("path",{
-                    d: bordo_1
-                })
-            );
-            const c_id_2 = `_clp2_${id}`;
-            const limigo_2 = Lab.limigo(c_id_2, 
-                Lab.e("path",{
-                    d: bordo_2,
-                    transform: `translate(${LabHofmanAparato.tubdistanco+22},0)`
-                })
-            );
+        this.enh("1");
+        this.enh("2");
 
-            // likva enhavo, ĝi ne ekzakte respondas
-            // al la volumeno de cilindro, aparte por
-            // oblikvaj anguloj, sed proksimumo eble sufiĉas
-            // aliokaze oni devus ekzakte elkalkuli la
-            // altecon de la likvaĵo en la botelo depende
-            // de klino, kio estus sufiĉe ambicia entrepreno :-)
-            const enhavo_1 = Lab.e("rect",
-            {
-                x: 8,
-                y: -this.nulo + 4*ml,
-                width: 24,
-                height: this.nulo -4*ml, // 0-streko - gasa enhavo en ml
-                class: "likvo likvo_1",
-                "clip-path": `url(#${c_id_1})`,
-            });
-            const enhavo_2 = Lab.e("rect",
-            {
-                x: LabHofmanAparato.tubdistanco+30,
-                y: -this.nulo + 4*ml,
-                width: 24,
-                height: this.nulo -4*ml, // 0-streko - gasa enhavo en ml
-                class: "likvo likvo_2",
-                "clip-path": `url(#${c_id_2})`,
-            });
-      
-            this.g.append(limigo_1,enhavo_1,limigo_2,enhavo_2);
-        }
-
-            // enhavo de ligtubo
-            const enhavo_l = Lab.e("rect",
-            {
-                x: 32,
-                y: -80,
-                width: LabHofmanAparato.tubdistanco,
-                height: 20, // 0-streko - gasa enhavo en ml
-                class: "likvo likvo_l"
-            });              
-        
-            // enhavo de rezervujo
-            const c_id_r = `_clpr_${id}`;
-            const limigo_r = Lab.limigo(c_id_r, 
-                Lab.e("path",{
-                    d: bordo_rezervujo,
-                    transform: `translate(${lt2+11},0)`
-                })
-            );
-            const enhavo_r = Lab.e("rect",
-            {
-                x: lt2+5,
-                y: -this.rnulo + 10, //4*ml,
-                width: 52,
-                height: this.rnulo-75-4*ml, // 0-streko - gasa enhavo en ml
-                class: "likvo likvo_r",
-                "clip-path": `url(#${c_id_r})`,
-            });              
-            this.g.append(limigo_r,enhavo_r,enhavo_l);
+        // enhavo de horizontala ligtubo
+        const enhavo_l = Lab.e("rect",
+        {
+            x: 32,
+            y: -80,
+            width: LabHofmanAparato.tubdistanco,
+            height: 20, // 0-streko - gasa enhavo en ml
+            class: "likvo likvo_l"
+        });              
+    
+        // enhavo de meza rezervujo
+        const c_id_r = `_clpr_${id}`;
+        const limigo_r = Lab.limigo(c_id_r, 
+            Lab.e("path",{
+                d: bordo_rezervujo,
+                transform: `translate(${lt2+11},0)`
+            })
+        );
+        const enhavo_r = Lab.e("rect",
+        {
+            id: "enhavo_r_hofman",
+            x: lt2+5,
+            y: -this.rnulo + 10, //4*ml,
+            width: 52,
+            height: this.rnulo-75-4*ml, // 0-streko - gasa enhavo en ml
+            class: "likvo likvo_r",
+            "clip-path": `url(#${c_id_r})`,
+        });              
+        this.g.append(limigo_r,enhavo_r,enhavo_l);
 
         this.g.append(krano_1,krano_2,elektrodo_plus,elektrodo_minus,
             ujo_1,ujo_2,ligtubo,rezervujo,skalo_1,skalo_2,
@@ -959,26 +963,61 @@ class LabHofmanAparato  extends LabUjo {
 
     /**
      * Metas/remetas la gasenhavon al (0) ml
+     * @param {string} ujo - 1 = maldekstra, 2 = dekstra, r = meza ujo
      */
-    enhavo(ml=0, dekstra=false) {
-        if (ml<0) throw "Programeraro, enhavmeto alia ol 0ml ne jam realigita!"
-        // metu al 0-linio (50ml)
-        this.ml = -1;
-        this.etendo(1);
+    enhavo(ml=0, ujo="1") {
+        if (ml<0) {
+            console.error("Programeraro, enhavmeto sub 0 ml ne permesita!");
+            // metu al 0-linio (50ml)
+            this.ml = -1;
+            this.etendo(1);
+            return;
+        }
+
+        this.ml = ml;
+        
+        const h = (ujo == "r"? this.rnulo : this.nulo) - 4*this.ml;
+        const enh = this.g.querySelector(`#enhavo_${ujo}_hofman`);
+        Lab.a(enh, {
+            height: h,
+            y: -h
+        });
     }
+
+    /**
+     * Aldonas vezikojn al la enhavo de unu el la du tuboj
+     * @param {*} vezikoj vezikoj (Lab.falaĵo)
+     * @param {*} ujo  1 = maldekstra, 2 = dekstra ujo
+     */
+    vezikoj(vezikoj, ujo="1") {
+        const enh = this.g.querySelector(`#enhavo_${ujo}_hofman`);
+        enh.append(vezikoj);
+    }
+
+    /**
+     * Redonas la limigon de la enhavo, kiel ĉe path.d, ekz-e por limigi falaĵon
+     * @param {string} ujo - 1 = maldekstra, 2 = dekstra, r = meza ujo
+     */
+    enhavlimigo(ujo="1") {
+        const elektilo = `#_clp${ujo}_hofman path`;
+        const clp = this.g.querySelector(elektilo);
+        if (clp) return clp.getAttribute("d");
+    }    
 
     /**
      * Etendas la gasan enhavon supre de la tubo je ml
      * @param {number} ml tiom da ml la gasa enhavo eniĝas
+     * @param {string} ujo - 1 = maldekstra, 2 = dekstra, r = meza ujo
      */
-    etendo(ml=1, dekstra=false) {
+    etendo(ml=1, ujo="1") {
         if (this.ml<50) {
             this.ml += ml; // sume aldonita gasa volumeno en ml
 
-            const enh = this.g.querySelector(dekstra?".likvo_2":".likvo_1");
+            const h = (ujo == "r"? this.rnulo : this.nulo) - 4*this.ml;
+            const enh = this.g.querySelector(`#enhavo_${ujo}_hofman`);
             Lab.a(enh, {
-                y: -this.nulo + 4*this.ml,
-                height: this.nulo -4*this.ml
+                y: -h,
+                height: h
             });
         }
     }
@@ -1016,11 +1055,14 @@ class LabFalaĵo {
      *   faldistanco: faldistanco, se ne donita ĝisgrunde
      *   falaĵalto: vario/alteco de falaĵo surgrunde
      *   fine: fina stato (freeze|remove)
-     * donu pezajn malgrandajn erojn unue, due la pli grandajn nubecajn!
+     * Por precipito donu pezajn malgrandajn erojn unue, due la pli grandajn nubecajn!
+     * La referencilo devas montri al antaŭe difinita objekto, kreita ekz-e
+     * per lab.difinoj().append(Lab.e("circle",...
+     * aŭ per ero_smb()
      * @param {string} id unika rekonilo referencanta eron en <defs>
      * @param {string} cls klasnomo de falaĵo, ekz-e por doni koloron, travideblecon ks
-     * @param {string} ero1 ero speco unu (difinenda per Laboratorio.ero_smb())
-     * @param {string} ero2 ero speco du (difinenda per Laboratorio.ero_smb())
+     * @param {string} ero1 ero speco unu
+     * @param {string} ero2 ero speco du
      * @param {string} bordo pado por limigo (alternative al rektangulo w x h)
      * @param {number} w larĝeco, apriore 100
      * @param {number} h alteco, apriore 100
@@ -1924,11 +1966,14 @@ class Lab {
      * a: alteco de distribuo mezurite de la supro
      * fd: faldistanco, se ne donita ĝisgrunde
      * af: vario de falaĵo surgrunde
-     * donu pezajn malgrandajn erojn unue, due la pli grandajn nubecajn!
+     * ĉe precipito donu pezajn malgrandajn erojn unue, due la pli grandajn nubecajn!
+     * La referencilo devas montri al antaŭe difinita objekto, kreita ekz-e
+     * per lab.difinoj().append(Lab.e("circle",...
+     * aŭ per ero_smb()
      * @param {string} id unika rekonilo
      * @param {string} cls klasnomo de falaĵo, ekz-e por doni koloron, travideblecon ks
-     * @param {string} ero1 ero speco unu (difinenda per Laboratorio.ero_smb())
-     * @param {string} ero2 ero speco du (difinenda per Laboratorio.ero_smb())
+     * @param {string} ero1 ero speco unu
+     * @param {string} ero2 ero speco du
      * @param {string} bordo pado por limigo (alternative al rektangulo w x h)
      * @param {number} w larĝeco, apriore 100
      * @param {number} h alteco, apriore 100
@@ -2387,7 +2432,7 @@ class Laboratorio extends LabSVG {
     }
 
      /**
-     * Kreas eron kiel simbolo uzeble poste, ekz-e kiel falaĵo (guto, precipitero...)
+     * Kreas eron kiel simbolo uzebla poste, ekz-e kiel falaĵo (guto, precipitero...)
      */
     ero_smb(id,r,cls="ero") {
         const dif = this.difinoj();

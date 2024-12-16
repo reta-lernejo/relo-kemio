@@ -31,18 +31,64 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
   }
 
   let lab; // la laboratorio kaj iloj
-  let hofmanaparato, mezurilo, eksperimento;
+  let aparato, mezurilo, eksperimento;
   const ALTO = 500;
   const LARĜO = 500;
   const X_HOFMANN = 200;
 
   function preparo() {
-    aparato.enhavo(eksperimento.ml);
-    mezurilo.valoro(0);
+    //aparato.enhavo(eksperimento.ml);
+    //mezurilo.valoro(0);
+    // ŝaltu...
+    vezikoj();
+  }
+
+  function vezikoj() {
+    const lalto = 1/6 * 150;
+    // ni uzas "falaĵo"-n por leviĝantaj vezikoj, tial supro estu 0 kaj faldistanco negativa!
+    // KOREKTU: por la H2-vezikoj ni bezonas alian id kaj duobligu n
+    const v1 = { id: "veziko_O2", klasoj: "", n: 6, daŭro: 1, supro: 0, alto: 20, faldistanco: -lalto, videblo: 1.0 };
+    const v2 = { id: "veziko_O2", klasoj: "", n: 5, daŭro: 5, aperdaŭro: 3, supro: 0, alto: 20, faldistanco: -lalto, videblo: 1.0 };
+
+    const limigo_H2 = aparato.enhavlimigo("1");
+    const limigo_O2 = aparato.enhavlimigo("2");
+    veziketoj_O2 = Lab.falaĵo("vezikoj_O2","vezikoj",
+        v1, v2, limigo_O2, 25, lalto);
+    veziketoj_H2 = Lab.falaĵo("vezikoj_H2","vezikoj",
+        {...v1,...{id: "veziko_H2",n: 12}},
+        {...v2, ...{id: "veziko_H2",n: 10}},
+        limigo_H2, 25, lalto);
+    aparato.vezikoj(veziketoj_O2,"2");  // aldonu vezikojn al jama likvo
+    aparato.vezikoj(veziketoj_H2,"1");  // aldonu vezikojn al jama likvo
+
+    for (const a of ĉiuj("#vezikoj animate")) {
+      a.beginElement();
+    }
+    for (const am of ĉiuj("#vezikoj animateMotion")) {
+      Lab.a(am,{
+        repeatCount: "indefinite",
+        fill: "remove"
+      });
+      am.beginElement();
+    }
   }
 
   lanĉe(()=>{
     lab = new Laboratorio(ĝi("#eksperimento"),"fono",LARĜO,ALTO+10);
+
+    // difinu vezikojn
+    lab.difinoj().append(
+      Lab.e("circle",{
+        id: "veziko_H2",
+        class: "veziko",
+        r: 0.8
+      }),
+      Lab.e("circle",{
+        id: "veziko_O2",
+        class: "veziko",
+        r: 1 // duoble volumeno: r_O2 = 1,25*r_H2
+      })
+    );
 
     // hofmann-aparato
     aparato = Lab.hofmanaparato("hofman",1); // elfluo = 100ml, t.e. malplena
@@ -84,6 +130,8 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     lab.metu(ptubo2,{id: "dekstre", x:X_HOFMANN+140, y: -95});
     lab.metu(keno,{id: "keno", x:X_HOFMANN+190, y:ALTO-20});
     lab.metu(kandelo,{id: "kandelo", x:X_HOFMANN+230, y:ALTO-20});
+
+    preparo();
   });
 </script>
 

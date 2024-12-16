@@ -99,7 +99,9 @@ Necesas scii, ke ankaŭ en pura akvo ties molekuloj iomete disociiĝas al jonoj 
     // plenigu la glason
     substanco = subst;
     const ecoj = substancoj[subst];
+    // trovu la enhavon en la grafiko
     const enhavo = ĝi("#_glaso_provtubo_enhavo .likvo") || ĝi("#_glaso_provtubo_enhavo .__subst");
+    // ŝanĝu ĝiajn ecojn
     Lab.a(enhavo,{class: "__subst", fill: ecoj[1], "fill-opacity": ecoj[2]});    
     // ĉe mineralakvo / limonado aldonu vezikojn
     forigu("#vezikoj");
@@ -109,7 +111,6 @@ Necesas scii, ke ankaŭ en pura akvo ties molekuloj iomete disociiĝas al jonoj 
     
     indikilo.makulo(7,true); // true: forigu la makulon
     lab.movu(bastono,"B1");
-
   }
 
   function pHprovo() {
@@ -144,6 +145,7 @@ Necesas scii, ke ankaŭ en pura akvo ties molekuloj iomete disociiĝas al jonoj 
 
   lanĉe(()=>{
     lab = new Laboratorio(ĝi("#eksperimento"),"fono",LARĜO,ALTO+10);
+    // difinu veziketon por mineralakvo ktp.
     lab.difinoj().append(
       Lab.e("circle",{
         id: "veziko",
