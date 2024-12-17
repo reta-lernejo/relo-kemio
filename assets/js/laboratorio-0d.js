@@ -991,6 +991,10 @@ class LabHofmanAparato  extends LabUjo {
      */
     vezikoj(vezikoj, ujo="1") {
         const enh = this.g.querySelector(`#enhavo_${ujo}_hofman`);
+        const x =  ujo=="1"? 8 : LabHofmanAparato.tubdistanco+30;
+        Lab.a(vezikoj,{
+            transform: `translate(${x},0)`
+        });
         enh.append(vezikoj);
     }
 
@@ -1048,7 +1052,7 @@ class LabHofmanAparato  extends LabUjo {
 class LabFalaĵo {
     /**
      * Kreas falaĵon (gutoj, precipito ks). Erojn de falaĵo transdonu kiel objekto 
-     * {id: referencilo, n: nombro, daŭro: mezdaŭro, aperdaŭro, x0, supro: komenca supro, alteco: komenca alteco, 
+     * {id: referencilo, n: nombro, daŭro: mezdaŭro, aperdaŭro, x0, supro: komenca supro, alto: komenca alteco, 
      * faldistanco, falaĵalto, fine, klasoj, videblo, poste: finreago},
      *   x0: komenca x-koordinato (ekz-e por gutoj)
      *   alto: alteco de distribuo mezurite de la supro
@@ -1474,16 +1478,20 @@ class LabMezurilo extends LabIlo {
      * Kreas mezurilon kun ronda skalo
      * kaj montrilo
      * @param {*} id 
+     * @param {number} max - maksimuma valoro de la skalo
+     * @param {string} unuo - fizika unuo (V, W k.s.)
      * @param {*} w larĝo
      * @param {*} h alto
      * @param {*} r rando
-     * @param {*} teksto 
      */
     constructor(id,max,unuo='',w=120,h=80,r=5) {
         super(id);
+
         const rmin = h/2;
         const lstrek = w/16;
-        const O = [w/2,rmin+lstrek+20]
+
+        this.max = max;
+        this.O = [w/2,rmin+lstrek+20];
 
         const cplato = Lab.e("g",{
             id: `_plato_${id}`,
@@ -1495,14 +1503,14 @@ class LabMezurilo extends LabIlo {
         });
         const skalo = Lab.rskalo(id+"_skalo",0,max,4,1,5,10,lstrek,rmin); //30*4° = 120°
         Lab.a(skalo,{
-            transform: `translate(${O[0]} ${O[1]}) rotate(${-150})`
+            transform: `translate(${this.O[0]} ${this.O[1]}) rotate(${-150})`
         });
         cplato.append(kadro,skalo);
         // nombroj ĉe la skalo
         for (let t=0; t<=max/10; t++) {
             const vt = Lab.e("text",{
-                x: O[0], y:12,
-                transform: `rotate(${-60+t*10*120/max} ${O[0]} ${O[1]})`,
+                x: this.O[0], y:12,
+                transform: `rotate(${-60+t*10*120/max} ${this.O[0]} ${this.O[1]})`,
                 class: "nombro"
             },""+t*10);
             cplato.append(vt);
@@ -1512,9 +1520,9 @@ class LabMezurilo extends LabIlo {
             class: "unuo"
         },unuo);
         const montrilo = Lab.e("path",{
-            d: `M${O[0]},${O[1]}l0,${-rmin-lstrek/2}`,
-            //transform: `rotate(-60 ${O[0]} ${O[1]})`,
-            transform: `rotate(-30 ${O[0]} ${O[1]})`,
+            d: `M${this.O[0]},${this.O[1]}l0,${-rmin-lstrek/2}`,
+            transform: `rotate(-60 ${this.O[0]} ${this.O[1]})`,
+            //transform: `rotate(-30 ${O[0]} ${O[1]})`,
             class: "montrilo"
         });
         const ŝaltilo = Lab.butono('⏻',w-24,h-24,20,20,8);
@@ -1535,11 +1543,12 @@ class LabMezurilo extends LabIlo {
      * Aktualigas la montritan valoron en la monitoro
      */
     valoro(val) {
-        // ... kalkulu angulo laŭ valoro kaj rotaciu la montrilon akorde        
-        /*
-        const tx = this.g.querySelector("text");
-        tx.textContent = val;
-        */
+        const montrilo = this.g.querySelector(".montrilo");
+        const a = -60+val*120/this.max
+        // ... kalkulu angulon laŭ valoro kaj rotaciu la montrilon akorde      
+        Lab.a(montrilo, {
+            transform: `rotate(${a} ${this.O[0]} ${this.O[1]})`,
+        })
     }
 }
 
@@ -2365,7 +2374,7 @@ class Laboratorio extends LabSVG {
 
     /**
      * Difinas reagon de ilo al klako
-     * @param {*} ilo 
+     * @param {*} ilo - SVG elemento aŭ la registrita nomo de la objekto (vd lab.metu)
      * @param {function} reago 
      */
     klak_reago(ilo,reago) {

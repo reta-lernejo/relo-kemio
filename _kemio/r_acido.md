@@ -178,15 +178,15 @@ Necesas scii, ke ankaŭ en pura akvo ties molekuloj iomete disociiĝas al jonoj 
     let dk_y = 10, md_y = 10;
 
     for (s of Object.keys(substancoj)) { 
-      let btn;     
+      let btn;
       if (s.startsWith("H")) {
         btn = lab.butono(s,-10,md_y,btn_w+20,btn_h);
         md_y += btn_h + 4;
       } else {
         btn = lab.butono(s,LARĜO-btn_w+10,dk_y,btn_w,btn_h);
       dk_y += btn_h + 4;
-      }       
-        
+      }
+
       lab.klak_reago({g: btn},(btn) => {
         const subst = btn.g.textContent;
         // forigu klason .premita de antaŭa butono...

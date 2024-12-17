@@ -31,40 +31,45 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
   }
 
   let lab; // la laboratorio kaj iloj
-  let aparato, mezurilo, eksperimento;
+  let aparato, voltmetro, eksperimento;
   const ALTO = 500;
   const LARĜO = 500;
   const X_HOFMANN = 200;
 
-  function preparo() {
+  function elektro() {
     //aparato.enhavo(eksperimento.ml);
     //mezurilo.valoro(0);
     // ŝaltu...
+    const ŝaltilo = ĝi("#_plato_voltmetro .ŝaltilo");
+    ŝaltilo.classList.add("ŝaltita");
+    voltmetro.valoro(19.8);
     vezikoj();
   }
 
   function vezikoj() {
-    const lalto = 1/6 * 150;
+    const h_alto = 300; // alto de aparataj tuboj
     // ni uzas "falaĵo"-n por leviĝantaj vezikoj, tial supro estu 0 kaj faldistanco negativa!
-    // KOREKTU: por la H2-vezikoj ni bezonas alian id kaj duobligu n
-    const v1 = { id: "veziko_O2", klasoj: "", n: 6, daŭro: 1, supro: 0, alto: 20, faldistanco: -lalto, videblo: 1.0 };
-    const v2 = { id: "veziko_O2", klasoj: "", n: 5, daŭro: 5, aperdaŭro: 3, supro: 0, alto: 20, faldistanco: -lalto, videblo: 1.0 };
+    // la vezikoj ekas ĉe la elektrodo en alto (0,40)
+    // kaj atingu ĝis la supro de la enhavo. Kiam la akvinivelo sinkas
+    // ni devos poste adapti faldistancon (negativa, ĉar ili ja leviĝas)
+    const v1 = { id: "veziko_O2", klasoj: "", n: 6, daŭro: 1, supro: 0, alto: -40, faldistanco: -h_alto, falaĵalto: 0, videblo: 1.0 };
+    const v2 = { id: "veziko_O2", klasoj: "", n: 5, daŭro: 5, aperdaŭro: 3, supro: 0, alto: -40, faldistanco: -h_alto, falaĵalto: 0, videblo: 1.0 };
 
     const limigo_H2 = aparato.enhavlimigo("1");
     const limigo_O2 = aparato.enhavlimigo("2");
     veziketoj_O2 = Lab.falaĵo("vezikoj_O2","vezikoj",
-        v1, v2, limigo_O2, 25, lalto);
+        v1, v2, limigo_O2, 25, h_alto);
     veziketoj_H2 = Lab.falaĵo("vezikoj_H2","vezikoj",
         {...v1,...{id: "veziko_H2",n: 12}},
         {...v2, ...{id: "veziko_H2",n: 10}},
-        limigo_H2, 25, lalto);
+        limigo_H2, 25, h_alto);
     aparato.vezikoj(veziketoj_O2,"2");  // aldonu vezikojn al jama likvo
     aparato.vezikoj(veziketoj_H2,"1");  // aldonu vezikojn al jama likvo
 
-    for (const a of ĉiuj("#vezikoj animate")) {
+    for (const a of ĉiuj("#vezikoj_H2 animate, #vezikoj_O2 animate")) {
       a.beginElement();
     }
-    for (const am of ĉiuj("#vezikoj animateMotion")) {
+    for (const am of ĉiuj("#vezikoj_H2 animateMotion, #vezikoj_O2 animateMotion")) {
       Lab.a(am,{
         repeatCount: "indefinite",
         fill: "remove"
@@ -81,12 +86,12 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
       Lab.e("circle",{
         id: "veziko_H2",
         class: "veziko",
-        r: 0.8
+        r: 1.6
       }),
       Lab.e("circle",{
         id: "veziko_O2",
         class: "veziko",
-        r: 1 // duoble volumeno: r_O2 = 1,25*r_H2
+        r: 2 // duoble volumeno: r_O2 = 1,25*r_H2
       })
     );
 
@@ -131,7 +136,12 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     lab.metu(keno,{id: "keno", x:X_HOFMANN+190, y:ALTO-20});
     lab.metu(kandelo,{id: "kandelo", x:X_HOFMANN+230, y:ALTO-20});
 
-    preparo();
+    // ŝaltilo por la elektro
+    const ŝaltilo = ĝi("#_plato_voltmetro .ŝaltilo");
+    lab.klak_reago(ŝaltilo,(btn) => {
+      elektro();
+    });
+
   });
 </script>
 
@@ -167,9 +177,15 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
         stroke: #ccc;
         fill: #ddf;
       }
+      .ŝaltilo.ŝaltita rect {
+        fill: #668;
+      }
       .ŝaltilo text {
         fill: #112;
         font-size: 11pt;
+      }
+      .ŝaltilo.ŝaltita text {
+        fill: #811;
       }
     ]]>
   </style>
