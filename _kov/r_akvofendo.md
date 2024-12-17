@@ -157,6 +157,11 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
       .likvo {
         fill: hsla(236, 14%, 75%, 0.4);
       }
+      .veziko {
+        fill: url(#vitro);
+        stroke: black;
+        stroke-width: 0.2;
+      }
       .klemo_1 {
         fill: url(#klemo_plus);
       }

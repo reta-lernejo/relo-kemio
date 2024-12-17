@@ -1490,6 +1490,7 @@ class LabMezurilo extends LabIlo {
         const rmin = h/2;
         const lstrek = w/16;
 
+        this.val = 0;
         this.max = max;
         this.O = [w/2,rmin+lstrek+20];
 
@@ -1544,11 +1545,33 @@ class LabMezurilo extends LabIlo {
      */
     valoro(val) {
         const montrilo = this.g.querySelector(".montrilo");
-        const a = -60+val*120/this.max
-        // ... kalkulu angulon laŭ valoro kaj rotaciu la montrilon akorde      
-        Lab.a(montrilo, {
-            transform: `rotate(${a} ${this.O[0]} ${this.O[1]})`,
-        })
+        const a0 = -60+this.val*120/this.max
+        // ... kalkulu novan angulon laŭ valoro kaj rotaciu la montrilon akorde      
+        const a1 = -60+val*120/this.max
+        this.val = val;
+        const tf = Lab.e("animateTransform", {
+            attributeName: "transform",
+            attributeType: "XML",
+            type: "rotate",
+            //from: `${a0} 60 70`,
+            //to: `${a1} 60 70`,
+            dur: "7s",
+            values: `${a0} 60 70;${a1+2} 60 70;${a1} 60 70`,
+            //keyTimes: "0;0.75;1",
+            calcMode: "paced",
+            repeatCount: 1,
+            fill: "freeze"  
+        });
+        const at = montrilo.querySelector("animateTransform");
+        // forigu malnovan animacion
+        if (at) {
+            Lab.a(montrilo, {
+                transform: `rotate(${a0} ${this.O[0]} ${this.O[1]})`,
+            })
+            at.remove();    
+        };
+        montrilo.append(tf);
+        //tf.beginElement();
     }
 }
 
