@@ -1555,7 +1555,7 @@ class LabMezurilo extends LabIlo {
             type: "rotate",
             //from: `${a0} 60 70`,
             //to: `${a1} 60 70`,
-            dur: "7s",
+            dur: "4s",
             values: `${a0} 60 70;${a1+2} 60 70;${a1} 60 70`,
             //keyTimes: "0;0.75;1",
             calcMode: "paced",
@@ -1571,7 +1571,7 @@ class LabMezurilo extends LabIlo {
             at.remove();    
         };
         montrilo.append(tf);
-        //tf.beginElement();
+        tf.beginElement();
     }
 }
 

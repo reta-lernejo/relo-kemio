@@ -39,11 +39,28 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
   function elektro() {
     //aparato.enhavo(eksperimento.ml);
     //mezurilo.valoro(0);
-    // ŝaltu...
     const ŝaltilo = ĝi("#_plato_voltmetro .ŝaltilo");
-    ŝaltilo.classList.add("ŝaltita");
-    voltmetro.valoro(19.8);
-    vezikoj();
+    if (voltmetro.val <= 0) {
+      // ŝaltu...
+      ŝaltilo.classList.add("ŝaltita");
+      voltmetro.valoro(19.8);
+      vezikoj();
+    } else {
+      // malŝaltu
+      ŝaltilo.classList.remove("ŝaltita");
+      voltmetro.valoro(0);
+      vezikoj_haltu();
+    }
+  }
+
+  function vezikoj_haltu() {
+    // ŝanĝu repeatCount al 1 (lasta)
+    for (const am of ĉiuj("#vezikoj_H2 animateMotion, #vezikoj_O2 animateMotion")) {
+      Lab.a(am,{
+        repeatCount: "1"
+      });
+      am.beginElement();
+    }
   }
 
   function vezikoj() {
