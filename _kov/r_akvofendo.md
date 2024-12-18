@@ -61,6 +61,9 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
       });
       am.beginElement();
     }
+
+    // haltigu gasiĝon
+    purigu_prokrastojn();
   }
 
   function vezikoj() {
@@ -69,19 +72,19 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     // la vezikoj ekas ĉe la elektrodo en alto (0,40)
     // kaj atingu ĝis la supro de la enhavo. Kiam la akvinivelo sinkas
     // ni devos poste adapti faldistancon (negativa, ĉar ili ja leviĝas)
-    const v1 = { id: "veziko_O2", klasoj: "", n: 6, daŭro: 1, supro: 0, alto: -40, faldistanco: -h_alto, falaĵalto: 0, videblo: 1.0 };
+    const v1 = { id: "veziko_O2", klasoj: "", n: 6, daŭro: 2, supro: 0, alto: -40, faldistanco: -h_alto, falaĵalto: 0, videblo: 1.0 };
     const v2 = { id: "veziko_O2", klasoj: "", n: 5, daŭro: 5, aperdaŭro: 3, supro: 0, alto: -40, faldistanco: -h_alto, falaĵalto: 0, videblo: 1.0 };
 
-    const limigo_H2 = aparato.enhavlimigo("1");
-    const limigo_O2 = aparato.enhavlimigo("2");
+    const limigo_O2 = aparato.enhavlimigo("1");
+    const limigo_H2 = aparato.enhavlimigo("2");
     veziketoj_O2 = Lab.falaĵo("vezikoj_O2","vezikoj",
         v1, v2, limigo_O2, 25, h_alto);
     veziketoj_H2 = Lab.falaĵo("vezikoj_H2","vezikoj",
         {...v1,...{id: "veziko_H2",n: 12}},
         {...v2, ...{id: "veziko_H2",n: 10}},
         limigo_H2, 25, h_alto);
-    aparato.vezikoj(veziketoj_O2,"2");  // aldonu vezikojn al jama likvo
-    aparato.vezikoj(veziketoj_H2,"1");  // aldonu vezikojn al jama likvo
+    aparato.vezikoj(veziketoj_O2,"1");  // aldonu vezikojn al jama likvo
+    aparato.vezikoj(veziketoj_H2,"2");  // aldonu vezikojn al jama likvo
 
     for (const a of ĉiuj("#vezikoj_H2 animate, #vezikoj_O2 animate")) {
       a.beginElement();
@@ -93,6 +96,20 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
       });
       am.beginElement();
     }
+
+    // regula adaptu la akvonivelon (t.e. gaskvanton)
+    gasiĝo();
+  }
+
+  function gasiĝo() {
+    const ms = 600;
+    const ml = 1; //0.1; // triono estas O2 kaj du trionoj H2
+
+    // aparato.enhavo(...ml))
+    aparato.gasiĝo(ml);
+
+    // revoku nin post kelkaj ms
+    prokrastu(() => gasiĝo(ml), ms);
   }
 
   lanĉe(()=>{
@@ -150,8 +167,10 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     lab.metu(aparato,{id: "malsupre", x:X_HOFMANN, y:ALTO-20});
     lab.metu(ptubo1,{id: "maldekstre", x:X_HOFMANN, y: -95});
     lab.metu(ptubo2,{id: "dekstre", x:X_HOFMANN+140, y: -95});
+    /* PROVIZORE ŝparu kalkultempon por la animacio:
     lab.metu(keno,{id: "keno", x:X_HOFMANN+190, y:ALTO-20});
     lab.metu(kandelo,{id: "kandelo", x:X_HOFMANN+230, y:ALTO-20});
+*/
 
     // ŝaltilo por la elektro
     const ŝaltilo = ĝi("#_plato_voltmetro .ŝaltilo");

@@ -533,6 +533,41 @@ class LabKonusFlakono extends LabUjo {
     }
 }
 
+class LabKrano {
+    constructor(fermita = true) {
+        // krano malfermita kaj fermita
+        this.fermita = fermita;
+        this.krano_fermita = `M10,-50 L30,-50 L32,-48 L40,-48 L40,-42 L32,-42 L30,-40 L10,-40 Z`;
+        this.krano_malfermita = `M10,-50 L30,-50 L32,-48 L34,-48 L36,-55 L39,-55 L40,-45 `
+            + `L39,-35 L36,-35 L34,-42 L32,-42 L30,-40 L10,-40 Z`;
+
+        this.krano = Lab.e("path",{
+            class: "krano",
+            d: fermita? this.krano_fermita : this.krano_malfermita
+        });
+    }
+
+    /**
+     * Malfermu kranon
+     */
+    malfermu() {
+        Lab.a(this.krano,{
+            d: this.krano_malfermita
+        });
+        this.fermita = false;
+    }
+
+    /**
+     * Fermu kranon
+     */
+    fermu() {
+        Lab.a(this.krano,{
+            d: this.krano_fermita
+        });
+        this.fermita = true;
+    }
+}
+
 class LabBureto  extends LabUjo {
 
     /**
@@ -580,6 +615,8 @@ class LabBureto  extends LabUjo {
         });
 
         // krano malfermita kaj fermita
+        this.krano = new LabKrano();
+        /*
         this.fermita = true;
         this.krano_fermita = `M10,-50 L30,-50 L32,-48 L40,-48 L40,-42 L32,-42 L30,-40 L10,-40 Z`;
         this.krano_malfermita = `M10,-50 L30,-50 L32,-48 L34,-48 L36,-55 L39,-55 L40,-45 `
@@ -589,6 +626,7 @@ class LabBureto  extends LabUjo {
             class: "krano",
             d: this.krano_fermita
         });
+        */
 
         // enhavo
         if (ml>=0) {           
@@ -617,7 +655,7 @@ class LabBureto  extends LabUjo {
             this.g.append(limigo,enhavo);
         }
 
-        this.g.append(krano,ujo,skalo);
+        this.g.append(krano.krano,ujo,skalo);
     }
 
     /**
@@ -637,7 +675,7 @@ class LabBureto  extends LabUjo {
      * Redonas la kranon kiel SVGElement
      */
     krano() {
-        return this.g.querySelector(".krano");
+        return this.krano.krano;
     }
 
     /**
@@ -678,22 +716,18 @@ class LabBureto  extends LabUjo {
      * Malfermu kranon
      */
     malfermu() {
-        const krano = this.g.querySelector(".krano");
-        Lab.a(krano,{
-            d: this.krano_malfermita
-        });
-        this.fermita = false;
+        this.krano.malfermu();
     }
 
     /**
      * Fermu kranon
      */
     fermu() {
-        const krano = this.g.querySelector(".krano");
-        Lab.a(krano,{
-            d: this.krano_fermita
-        });
-        this.fermita = true;
+        this.krano.fermu();
+    }
+
+    fermita() {
+        return this.krano.fermita;
     }
 }
 
@@ -703,12 +737,12 @@ class LabHofmanAparato  extends LabUjo {
     /**
      * Kreas bureton
      * @param {string} id unika il-nomo
-     * @param {number} ml volumeno elfluita en ml, 0 estas la plej supra streko, 50 la plej malsupra, -1 malplena
      */
-    constructor(id,ml=0) {
-        const h=300;
+    constructor(id) {
+        const h = 300;
         super(id);
-        this.ml = ml;
+        this.ml_H2 = 0;
+        this.ml_O2 = 0;
         this.nulo = h+30; // y-pozicio de maksimuma pleniĝo de dekstra/maldekstra tubo (skala 0 estas ĉe h)
         this.rnulo = h+90; // y-pozicio de maksimua pleniĝo de la meza rezervujo
 
@@ -759,7 +793,7 @@ class LabHofmanAparato  extends LabUjo {
           + `Q20,-74 30,-80L30,${-h-20}Q60,${-h-45} 28,${-h-70}L30,${-h-90}Z`;
 
         // helpfunkcio por krei enhavon dekstre/maldekstre
-        this.enh = function(ujo="1") {
+        this.enh = function(ujo="1",ml=0) {
             const c_id = `_clp${ujo}_${id}`;
             const bordo = ujo=="1"? bordo_1: bordo_2;
 
@@ -847,22 +881,37 @@ class LabHofmanAparato  extends LabUjo {
             transform: `translate(${LabHofmanAparato.tubdistanco+22},${-h})`
         });
 
+        /*
         // krano malfermita kaj fermita
+
         this.fermita = true;
         this.krano_fermita = `M10,-50 L30,-50 L32,-48 L40,-48 L40,-42 L32,-42 L30,-40 L10,-40 Z`;
         this.krano_malfermita = `M10,-50 L30,-50 L32,-48 L34,-48 L36,-55 L39,-55 L40,-45 `
             + `L39,-35 L36,-35 L34,-42 L32,-42 L30,-40 L10,-40 Z`;
+*/
 
-        const krano_1 = Lab.e("path",{
+        this.krano_1 = new LabKrano();
+        Lab.a(this.krano_1.krano, {
+            transform: `translate(0,${15-h})`
+        });
+        /*
+        Lab.e("path",{
             class: "krano krano_1",
             d: this.krano_fermita,
             transform: `translate(0,${15-h})`
         });
-        const krano_2 = Lab.e("path",{
+        */
+        this.krano_2 = new LabKrano();
+        Lab.a(this.krano_2.krano, {
+            transform: `translate(${LabHofmanAparato.tubdistanco+22},${15-h})`
+        });     
+        /*
+        Lab.e("path",{
             class: "krano krano_2",
             d: this.krano_fermita,
             transform: `translate(${LabHofmanAparato.tubdistanco+22},${15-h})`
         });
+        */
 
         // elektrodoj
         const ebordo = `M0,0L10,0L10,40L0,40Z`;
@@ -890,8 +939,8 @@ class LabHofmanAparato  extends LabUjo {
         });
 
         // enhavo
-        this.enh("1");
-        this.enh("2");
+        this.enh("1",this.ml_O2);
+        this.enh("2",this.ml_H2);
 
         // enhavo de horizontala ligtubo
         const enhavo_l = Lab.e("rect",
@@ -917,13 +966,13 @@ class LabHofmanAparato  extends LabUjo {
             x: lt2+5,
             y: -this.rnulo + 10, //4*ml,
             width: 52,
-            height: this.rnulo-75-4*ml, // 0-streko - gasa enhavo en ml
+            height: this.rnulo, //-75-4*ml, // 0-streko - gasa enhavo en ml
             class: "likvo likvo_r",
             "clip-path": `url(#${c_id_r})`,
         });              
         this.g.append(limigo_r,enhavo_r,enhavo_l);
 
-        this.g.append(krano_1,krano_2,elektrodo_plus,elektrodo_minus,
+        this.g.append(this.krano_1.krano,this.krano_2.krano,elektrodo_plus,elektrodo_minus,
             ujo_1,ujo_2,ligtubo,rezervujo,skalo_1,skalo_2,
             fiksilo_plus,fiksilo_minus);
     }
@@ -946,9 +995,9 @@ class LabHofmanAparato  extends LabUjo {
      */
     krano(dekstra = false) {
         if (!dekstra)
-            return this.g.querySelector(".krano_1");
+            return this.krano_1.krano;
         else
-            return this.g.querySelector(".krano_2")
+            return this.krano_2.krano;
     }
 
     /**
@@ -969,14 +1018,19 @@ class LabHofmanAparato  extends LabUjo {
         if (ml<0) {
             console.error("Programeraro, enhavmeto sub 0 ml ne permesita!");
             // metu al 0-linio (50ml)
+            /*
             this.ml = -1;
             this.etendo(1);
+            */
             return;
         }
 
-        this.ml = ml;
+        if (ujo == "1")
+            this.ml_O2 = ml;
+        else
+            this.ml_H2 = ml;
         
-        const h = (ujo == "r"? this.rnulo : this.nulo) - 4*this.ml;
+        const h = (ujo == "r"? this.rnulo : this.nulo) - 4*ml;
         const enh = this.g.querySelector(`#enhavo_${ujo}_hofman`);
         Lab.a(enh, {
             height: h,
@@ -995,6 +1049,8 @@ class LabHofmanAparato  extends LabUjo {
         Lab.a(vezikoj,{
             transform: `translate(${x},0)`
         });
+        const malnov = ĝi(vezikoj.id);
+        if (malnov) malnov.remove();
         enh.append(vezikoj);
     }
 
@@ -1009,43 +1065,70 @@ class LabHofmanAparato  extends LabUjo {
     }    
 
     /**
-     * Etendas la gasan enhavon supre de la tubo je ml
-     * @param {number} ml tiom da ml la gasa enhavo eniĝas
-     * @param {string} ujo - 1 = maldekstra, 2 = dekstra, r = meza ujo
+     * Etendas la gasan enhavon supre de la tuboj
+     * @param {number} ml tiom da ml la gasa enhavo estiĝas
      */
-    etendo(ml=1, ujo="1") {
-        if (this.ml<50) {
-            this.ml += ml; // sume aldonita gasa volumeno en ml
+    gasiĝo(ml=1) {
+        if (this.krano_1.fermita) {
+            this.ml_O2 += 1/3*ml;
 
-            const h = (ujo == "r"? this.rnulo : this.nulo) - 4*this.ml;
-            const enh = this.g.querySelector(`#enhavo_${ujo}_hofman`);
-            Lab.a(enh, {
-                y: -h,
-                height: h
+            // adaptu la enhavon
+            const enh1 = this.g.querySelector("#enhavo_1_hofman rect");
+            const h1 = this.nulo - 4*this.ml_O2;
+            Lab.a(enh1, {
+                height: h1,
+                y: -h1
             });
+            // ŝanĝu ankaŭ la altecon de la vezikanimacio
+            // ĉe problemoj kun animacio
+            // eble vd. https://stackoverflow.com/questions/6507009/dynamically-change-svg-animation-values-while-using-fill-freeze)
+            for (const am of ĉiuj("#vezikoj_O2 animateMotion")) {
+                Lab.a(am,{        
+                    path: `M0,0 L0,${-h1}`
+                });
+                am.beginElement();
+            }
+        }
+        if (this.krano_2.fermita) {
+            this.ml_H2 += 2/3*ml;
+
+            // adaptu la enhavon
+            const enh2 = this.g.querySelector("#enhavo_2_hofman rect");
+            const h2 = this.nulo - 4*this.ml_H2;
+            Lab.a(enh2, {
+                height: h2,
+                y: -h2
+            });
+
+            for (const am of ĉiuj("#vezikoj_H2 animateMotion")) {
+                Lab.a(am,{        
+                    path: `M0,0 L0,${-h2}`
+                });
+                am.beginElement();
+            }
         }
     }
 
     /**
      * Malfermu kranon
      */
-    malfermu() {
-        const krano = this.g.querySelector(".krano");
-        Lab.a(krano,{
-            d: this.krano_malfermita
-        });
-        this.fermita = false;
+    malfermu(ujo="1") {
+        if (ujo == "1") {
+            this.krano_1.malfermu();
+        } else {
+            this.krano_2.malfermu();
+        }
     }
 
     /**
      * Fermu kranon
      */
     fermu() {
-        const krano = this.g.querySelector(".krano");
-        Lab.a(krano,{
-            d: this.krano_fermita
-        });
-        this.fermita = true;
+        if (ujo == "1") {
+            this.krano_1.fermu();
+        } else {
+            this.krano_2.fermu();
+        }
     }
 }
 

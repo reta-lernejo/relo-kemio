@@ -279,7 +279,7 @@ Malsupre vi povas elekti unu el la preparitaj eksperimentoj, poste malfermi la k
 
     function fluo(fermu) {
       if (bureto.ml>=60) return; // bureto malplenigita!
-      if (bureto.fermita) return; // bureto estas (ĵus) fermita
+      if (bureto.fermita()) return; // bureto estas (ĵus) fermita
 
       // por verŝgutoj ni bezonas la pinton de la bureto kaj la surfacon de la flakonenhavo
       const pinto = bureto.pinto();
@@ -310,7 +310,7 @@ Malsupre vi povas elekti unu el la preparitaj eksperimentoj, poste malfermi la k
 
     // klako sur krano malfermu aŭ fermu ĝin!
     lab.klak_reago(bureto.krano(), () => {
-      if (bureto.fermita) {
+      if (bureto.fermita()) {
         bureto.malfermu();
         prokrastu(() => fluo(false), 500);
       } else {
