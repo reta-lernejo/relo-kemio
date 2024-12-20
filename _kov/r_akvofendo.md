@@ -117,6 +117,20 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     }
   }
 
+  function O2_ellaso() {
+    // ellasu 10ml el la O2
+    aparato.ellaso("1",10);
+    // tion faru nur fine de la animacio!
+    aparato.krano_1.fermu();
+  }
+
+  function H2_ellaso() {
+    // forigu 10ml el la O2
+    aparato.ellaso("2",10);
+    // tion faru nur fine de la animacio!
+    aparato.krano_2.fermu();
+  }
+
   lanĉe(()=>{
     lab = new Laboratorio(ĝi("#eksperimento"),"fono",LARĜO,ALTO+10);
 
@@ -135,7 +149,7 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     );
 
     // hofmann-aparato
-    aparato = Lab.hofmanaparato("hofman",1); // elfluo = 100ml, t.e. malplena
+    aparato = Lab.hofmanaparato("hofman",O2_ellaso,H2_ellaso); // elfluo = 100ml, t.e. malplena
     // du provtubojp por kapti gason
     ptubo1 = Lab.provtubo("provtubo_1",0,15,80,175);
     ptubo2 = Lab.provtubo("provtubo_2",0,15,80,182);

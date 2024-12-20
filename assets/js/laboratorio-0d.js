@@ -95,6 +95,8 @@ class LabSVG {
 
     /** 
      * Ŝovas elementon uzante atributon transform al nova pozicio (dx,dy)
+     * KOREKTU: tiu ĉi kaj kelkaj malsupraj ne temas pri la SVGElemento, do eble metu en klason "Lab"
+     * kiel "static". Aŭ eble eĉ kunigu ambaŭ klasojn...?
      */
     ŝovu(elm, x, y=0) {
         if (x || y)
@@ -534,7 +536,7 @@ class LabKonusFlakono extends LabUjo {
 }
 
 class LabKrano {
-    constructor(fermita = true) {
+    constructor(reago, fermita = true) {
         // krano malfermita kaj fermita
         this.fermita = fermita;
         this.krano_fermita = `M10,-50 L30,-50 L32,-48 L40,-48 L40,-42 L32,-42 L30,-40 L10,-40 Z`;
@@ -545,6 +547,8 @@ class LabKrano {
             class: "krano",
             d: fermita? this.krano_fermita : this.krano_malfermita
         });
+
+        if (reago) this.krano.addEventListener("click",reago);
     }
 
     /**
@@ -738,7 +742,7 @@ class LabHofmanAparato  extends LabUjo {
      * Kreas bureton
      * @param {string} id unika il-nomo
      */
-    constructor(id) {
+    constructor(id,kranreago_O2,kranreago_H2) {
         const h = 300;
         super(id);
         this.ml_H2 = 0;
@@ -789,8 +793,8 @@ class LabHofmanAparato  extends LabUjo {
             .replace('L40,-30L32,-50L32','Q37,-30 32,-50L32'); 
 
         const bordo_rezervujo = 
-            `M10,${-h-90}L12,${-h-70}Q-20,${-h-45} 10,${-h-20}L10,-80`
-          + `Q20,-74 30,-80L30,${-h-20}Q60,${-h-45} 28,${-h-70}L30,${-h-90}Z`;
+            `M10,${-h-90}L12,${-h-70}Q-6,${-h-70} -6,${-h-65}L-6,${-h-5}Q-6,${-h} 10,${-h}L10,-80`
+          + `Q20,-74 30,-80L30,${-h}Q46,${-h} 46,${-h-5}L46,${-h-65}Q46,${-h-70} 28,${-h-70}L30,${-h-90}Z`;
 
         // helpfunkcio por krei enhavon dekstre/maldekstre
         this.enh = function(ujo="1",ml=0) {
@@ -890,7 +894,7 @@ class LabHofmanAparato  extends LabUjo {
             + `L39,-35 L36,-35 L34,-42 L32,-42 L30,-40 L10,-40 Z`;
 */
 
-        this.krano_1 = new LabKrano();
+        this.krano_1 = new LabKrano(kranreago_O2);
         Lab.a(this.krano_1.krano, {
             transform: `translate(0,${15-h})`
         });
@@ -901,7 +905,7 @@ class LabHofmanAparato  extends LabUjo {
             transform: `translate(0,${15-h})`
         });
         */
-        this.krano_2 = new LabKrano();
+        this.krano_2 = new LabKrano(kranreago_H2);
         Lab.a(this.krano_2.krano, {
             transform: `translate(${LabHofmanAparato.tubdistanco+22},${15-h})`
         });     
@@ -1113,6 +1117,58 @@ class LabHofmanAparato  extends LabUjo {
                 //am.beginElement();
             }
         }
+    }
+
+    ellaso(ujo="1",ml) {
+        const enh = this.g.querySelector(`#enhavo_${ujo}_hofman rect`);
+        const rez = this.g.querySelector("#enhavo_r_hofman");
+
+        const y = parseFloat(enh.getAttribute("y"));
+        const h = parseFloat(enh.getAttribute("height"));
+        const ah = Lab.e("animate",{
+            attributeName: "height",
+            from: h,
+            to: h - ml*4,
+            dur: "3s",
+            repeatCount: "1",
+            fill: "freeze"
+        });
+        const ay = Lab.e("animate",{
+            attributeName: "y",
+            from: y,
+            to: y - ml*4,
+            dur: "3s",
+            repeatCount: "1",
+            fill: "freeze"
+        });
+          
+        const ry = parseFloat(rez.getAttribute("y"));
+        const rh = parseFloat(rez.getAttribute("height"));
+        const arh = Lab.e("animate",{
+            attributeName: "height",
+            from: rh,
+            to: rh - ml,
+            dur: "3s",
+            repeatCount: "1",
+            fill: "freeze"
+        });
+        const ary = Lab.e("animate",{
+            attributeName: "y",
+            from: ry,
+            to: ry + ml,
+            dur: "3s",
+            repeatCount: "1",
+            fill: "freeze"
+        });  
+
+        Lab.ido(enh,ah,`redukto_${ujo}_h`);
+        Lab.ido(enh,ay,`redukto_${ujo}_y`);
+        Lab.ido(rez,arh,"altigho_h");
+        Lab.ido(rez,ary,"altigho_y");
+        ah.beginElement();
+        ay.beginElement();
+        arh.beginElement();
+        ary.beginElement();
     }
 
     /**
@@ -1958,6 +2014,22 @@ class Lab {
     }
 
 
+    /**
+     * Aldonas idon al SVG-elemento. Se jam ekzistas tia kun
+     * la donita nomo, tion ni forigos unue
+     * @param {*} elm 
+     * @param {*} id 
+     * @param {*} nom 
+     */
+    static ido(elm, id, nom) {
+        const malnov = document.getElementById(nom);
+        if (malnov) malnov.remove();
+
+        id.setAttribute("id",nom);
+        elm.append(id);
+    }
+
+
     /** 
      * Desegnas rektangulon kun rondigitaj anguloj kaj kurbaj flankoj
      * @param {number} w larĝo
@@ -2169,8 +2241,8 @@ class Lab {
      * @param {string} id unika nomo
      * @param {number} ml volumeno elfluita en ml, 0 estas la plej supra streko, 50 la plej malsupra, -1 malplena
      */
-    static hofmanaparato(id,ml=0) {
-        return new LabHofmanAparato(id,ml);
+    static hofmanaparato(id,kranreago_O2,kranreago_H2) {
+        return new LabHofmanAparato(id,kranreago_O2,kranreago_H2);
     }
 
     /** 
