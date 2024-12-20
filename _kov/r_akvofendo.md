@@ -105,11 +105,16 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     const ms = 600;
     const ml = 1; //0.1; // triono estas O2 kaj du trionoj H2
 
-    // aparato.enhavo(...ml))
-    aparato.gasiĝo(ml);
+    if (aparato.ml_H2<57 && aparato.ml_O2<57) {
+      // aparato.enhavo(...ml))
+      aparato.gasiĝo(ml);
 
-    // revoku nin post kelkaj ms
-    prokrastu(() => gasiĝo(ml), ms);
+      // revoku nin post kelkaj ms
+      prokrastu(() => gasiĝo(ml), ms);
+    } else {
+      // haltigu la aparaton
+      elektro();
+    }
   }
 
   lanĉe(()=>{

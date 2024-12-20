@@ -1079,14 +1079,17 @@ class LabHofmanAparato  extends LabUjo {
                 height: h1,
                 y: -h1
             });
+            //console.debug("O2: "+this.ml_O2+" h1: "+h1);
             // ŝanĝu ankaŭ la altecon de la vezikanimacio
             // ĉe problemoj kun animacio
             // eble vd. https://stackoverflow.com/questions/6507009/dynamically-change-svg-animation-values-while-using-fill-freeze)
             for (const am of ĉiuj("#vezikoj_O2 animateMotion")) {
+                const p = am.parentElement;
+                const py = parseInt(p.getAttribute("y"));
                 Lab.a(am,{        
-                    path: `M0,0 L0,${-h1}`
+                    path: `M0,0 L0,${-h1-py}`
                 });
-                am.beginElement();
+                //am.beginElement();
             }
         }
         if (this.krano_2.fermita) {
@@ -1099,12 +1102,15 @@ class LabHofmanAparato  extends LabUjo {
                 height: h2,
                 y: -h2
             });
+            //console.debug("H2: "+this.ml_H2+" h2: "+h2);
 
             for (const am of ĉiuj("#vezikoj_H2 animateMotion")) {
+                const p = am.parentElement;
+                const py = parseInt(p.getAttribute("y"));
                 Lab.a(am,{        
-                    path: `M0,0 L0,${-h2}`
+                    path: `M0,0 L0,${-h2-py}`
                 });
-                am.beginElement();
+                //am.beginElement();
             }
         }
     }
@@ -2034,6 +2040,8 @@ class Lab {
      * @param {string} fn konduto ĉe fino (freeze|remove)
      */
     static falo(dy, dx=0, vx=0, d=10, rp=1, fn="freeze", poste) {
+        // KOREKTU: dy estu reduktita se la elira alteco jam devias de la nul-linio
+        // por tio necesas koni la patran elementon en kiun enŝovi la elementon animateMotion
         const f = Lab.e("animateMotion", {
             dur: d+'s',
             repeatCount: rp>1?Math.floor(Math.random()*rp):1,
