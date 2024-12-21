@@ -1036,7 +1036,7 @@ class LabHofmanAparato  extends LabUjo {
             this.ml_H2 = ml;
         
         const h = (ujo == "r"? this.rnulo : this.nulo) - 4*ml;
-        const enh = this.g.querySelector(`#enhavo_${ujo}_hofman`);
+        const enh = this.g.querySelector(`#enhavo_${ujo}_hofman rect`);
         Lab.a(enh, {
             height: h,
             y: -h
@@ -1075,19 +1075,14 @@ class LabHofmanAparato  extends LabUjo {
      */
     gasiĝo(ml=1) {
         if (this.krano_1.fermita) {
-            this.ml_O2 += 1/3*ml;
+            this.enhavo(this.ml_O2 + 1/3*ml,"1");
 
-            // adaptu la enhavon
-            const enh1 = this.g.querySelector("#enhavo_1_hofman rect");
-            const h1 = this.nulo - 4*this.ml_O2;
-            Lab.a(enh1, {
-                height: h1,
-                y: -h1
-            });
-            //console.debug("O2: "+this.ml_O2+" h1: "+h1);
             // ŝanĝu ankaŭ la altecon de la vezikanimacio
-            // ĉe problemoj kun animacio
-            // eble vd. https://stackoverflow.com/questions/6507009/dynamically-change-svg-animation-values-while-using-fill-freeze)
+            const enh1 = this.g.querySelector("#enhavo_1_hofman rect");
+            const h1 = parseInt(enh1.getAttribute("height"));
+
+            //console.debug("O2: "+this.ml_O2+" h1: "+h1);
+
             for (const am of ĉiuj("#vezikoj_O2 animateMotion")) {
                 const p = am.parentElement;
                 const py = parseInt(p.getAttribute("y"));
@@ -1098,15 +1093,11 @@ class LabHofmanAparato  extends LabUjo {
             }
         }
         if (this.krano_2.fermita) {
-            this.ml_H2 += 2/3*ml;
+            this.enhavo(this.ml_H2 + 2/3*ml,"2");
 
-            // adaptu la enhavon
             const enh2 = this.g.querySelector("#enhavo_2_hofman rect");
-            const h2 = this.nulo - 4*this.ml_H2;
-            Lab.a(enh2, {
-                height: h2,
-                y: -h2
-            });
+            const h2 = parseInt(enh2.getAttribute("height"));
+
             //console.debug("H2: "+this.ml_H2+" h2: "+h2);
 
             for (const am of ĉiuj("#vezikoj_H2 animateMotion")) {
@@ -1127,8 +1118,17 @@ class LabHofmanAparato  extends LabUjo {
 
         const y0 = parseFloat(enh.getAttribute("y"));
         const h0 = parseFloat(enh.getAttribute("height"));
-        const y1 = Math.max(-this.nulo,y0 - ml*4);
+
+        if (h0>=this.nulo) {
+            // jam ne plu estas gaso, finu tuj
+            console.info("Ne plu estas gaso en ujo "+ujo);
+            if (fine) fine();
+            return;
+        }
+
         const h1 = Math.min(this.nulo,h0 + ml*4);
+        const y1 = y0 - (h1-h0);
+        
         const ah = Lab.e("animate",{
             attributeName: "height",
             from: h0,
@@ -1146,10 +1146,13 @@ class LabHofmanAparato  extends LabUjo {
             fill: "freeze"
         });
           
+        // kiom da ml ni efektive ellasas?
+        const ml_ = (h1-h0)/4;
         const yr = parseFloat(rez.getAttribute("y"));
         const hr = parseFloat(rez.getAttribute("height"));
-        const yr1 = Math.min(-80,yr<-300?yr+ml:yr+4*ml); // ligtubo estas ĉe y=-80
-        const hr1 = Math.min(this.rnulo-80,yr<-300?hr-ml:hr-4*ml);
+                            // ligtubo estas ĉe y=-80
+        const hr1 = Math.min(this.rnulo-80,yr<-300?hr-ml_:hr-4*ml_);
+        const yr1 = yr - (hr1-hr); 
 
         const arh = Lab.e("animate",{
             attributeName: "height",
@@ -1177,12 +1180,16 @@ class LabHofmanAparato  extends LabUjo {
         arh.beginElement();
         ary.beginElement();
 
-        // persistigu la ŝanĝitajn koordinatojn
+        // persistigu la ŝanĝojn koordinatojn
         setTimeout(() => {
+            if (ujo == "1") this.enhavo(Math.max(0,this.ml_O2-ml_),ujo);
+            else this.enhavo(Math.max(0,this.ml_H2-ml_),ujo);
+            // tion devus fari jam .enhavo()...?
+            /*
             Lab.a(enh,{
                 height: h1,
                 y: y1
-            });
+            });*/
             Lab.a(rez, {
                 height: hr1,
                 y: yr1
