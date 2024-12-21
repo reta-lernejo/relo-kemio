@@ -748,7 +748,7 @@ class LabHofmanAparato  extends LabUjo {
         this.ml_H2 = 0;
         this.ml_O2 = 0;
         this.nulo = h+30; // y-pozicio de maksimuma pleniĝo de dekstra/maldekstra tubo (skala 0 estas ĉe h)
-        this.rnulo = h+90; // y-pozicio de maksimua pleniĝo de la meza rezervujo
+        this.rnulo = h+70; // y-pozicio de maksimua pleniĝo de la meza rezervujo
 
         // ujo el du tuboj kaj interligo
         // x-koordinatoj komencantaj ĉe la interligo de la maldekstra tubo   
@@ -968,9 +968,10 @@ class LabHofmanAparato  extends LabUjo {
         {
             id: "enhavo_r_hofman",
             x: lt2+5,
-            y: -this.rnulo + 10, //4*ml,
+            y: -this.rnulo + 1, 
             width: 52,
-            height: this.rnulo, //-75-4*ml, // 0-streko - gasa enhavo en ml
+                // ĉe -80 estas la ligtubo
+            height: this.rnulo-80, //rnulo-80-ml, // 0-streko - likva enhavo en ml
             class: "likvo likvo_r",
             "clip-path": `url(#${c_id_r})`,
         });              
@@ -1119,44 +1120,50 @@ class LabHofmanAparato  extends LabUjo {
         }
     }
 
-    ellaso(ujo="1",ml) {
+    ellaso(ujo="1",ml,fine) {
+        const daŭro = "3"; // s
         const enh = this.g.querySelector(`#enhavo_${ujo}_hofman rect`);
         const rez = this.g.querySelector("#enhavo_r_hofman");
 
-        const y = parseFloat(enh.getAttribute("y"));
-        const h = parseFloat(enh.getAttribute("height"));
+        const y0 = parseFloat(enh.getAttribute("y"));
+        const h0 = parseFloat(enh.getAttribute("height"));
+        const y1 = Math.max(-this.nulo,y0 - ml*4);
+        const h1 = Math.min(this.nulo,h0 + ml*4);
         const ah = Lab.e("animate",{
             attributeName: "height",
-            from: h,
-            to: h - ml*4,
-            dur: "3s",
+            from: h0,
+            to: h1,
+            dur: `${daŭro}s`,
             repeatCount: "1",
             fill: "freeze"
         });
         const ay = Lab.e("animate",{
             attributeName: "y",
-            from: y,
-            to: y - ml*4,
-            dur: "3s",
+            from: y0,
+            to: y1,
+            dur: `${daŭro}s`,
             repeatCount: "1",
             fill: "freeze"
         });
           
-        const ry = parseFloat(rez.getAttribute("y"));
-        const rh = parseFloat(rez.getAttribute("height"));
+        const yr = parseFloat(rez.getAttribute("y"));
+        const hr = parseFloat(rez.getAttribute("height"));
+        const yr1 = Math.min(-80,yr<-300?yr+ml:yr+4*ml); // ligtubo estas ĉe y=-80
+        const hr1 = Math.min(this.rnulo-80,yr<-300?hr-ml:hr-4*ml);
+
         const arh = Lab.e("animate",{
             attributeName: "height",
-            from: rh,
-            to: rh - ml,
-            dur: "3s",
+            from: hr,
+            to: hr1,
+            dur: `${daŭro}s`,
             repeatCount: "1",
             fill: "freeze"
         });
         const ary = Lab.e("animate",{
             attributeName: "y",
-            from: ry,
-            to: ry + ml,
-            dur: "3s",
+            from: yr,
+            to: yr1,
+            dur: `${daŭro}s`,
             repeatCount: "1",
             fill: "freeze"
         });  
@@ -1169,6 +1176,20 @@ class LabHofmanAparato  extends LabUjo {
         ay.beginElement();
         arh.beginElement();
         ary.beginElement();
+
+        // persistigu la ŝanĝitajn koordinatojn
+        setTimeout(() => {
+            Lab.a(enh,{
+                height: h1,
+                y: y1
+            });
+            Lab.a(rez, {
+                height: hr1,
+                y: yr1
+            });
+            // faru finan agon, kutime fermi la kranon
+            if (fine) fine();
+        }, daŭro*1000);
     }
 
     /**

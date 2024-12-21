@@ -64,6 +64,12 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
 
     // haltigu gasiĝon
     purigu_prokrastojn();
+
+    // forigu vezikojn fine
+    prokrastu(() => {
+      forigu("#vezikoj_H2");
+      forigu("#vezikoj_O2");
+    }, 2000);
   }
 
   function vezikoj() {
@@ -118,17 +124,15 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
   }
 
   function O2_ellaso() {
+    aparato.krano_1.malfermu();
     // ellasu 10ml el la O2
-    aparato.ellaso("1",10);
-    // tion faru nur fine de la animacio!
-    aparato.krano_1.fermu();
+    aparato.ellaso("1",10,()=>aparato.krano_1.fermu());
   }
 
   function H2_ellaso() {
+    aparato.krano_2.malfermu();
     // forigu 10ml el la O2
-    aparato.ellaso("2",10);
-    // tion faru nur fine de la animacio!
-    aparato.krano_2.fermu();
+    aparato.ellaso("2",10,()=>aparato.krano_2.fermu());
   }
 
   lanĉe(()=>{
