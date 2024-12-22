@@ -31,7 +31,7 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
   }
 
   let lab; // la laboratorio kaj iloj
-  let aparato, voltmetro, eksperimento;
+  let aparato, voltmetro, eksperimento, provtubo1, provtubo2;
   const ALTO = 500;
   const LARĜO = 500;
   const X_HOFMANN = 200;
@@ -126,13 +126,21 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
   function O2_ellaso() {
     aparato.krano_1.malfermu();
     // ellasu 10ml el la O2
-    aparato.ellaso("1",10,()=>aparato.krano_1.fermu());
+    aparato.ellaso("1",10,() => {
+      aparato.krano_1.fermu();
+      provtubo1.ŝtopu();
+      lab.metu(provtubo1,{id: "p1_fermita", x: 150, y: -50});
+    });
   }
 
   function H2_ellaso() {
     aparato.krano_2.malfermu();
     // forigu 10ml el la O2
-    aparato.ellaso("2",10,()=>aparato.krano_2.fermu());
+    aparato.ellaso("2",10,() => {
+      aparato.krano_2.fermu();
+      provtubo2.ŝtopu();
+      lab.metu(provtubo2,{id: "p2_fermita", x: 400, y: -50});
+    });
   }
 
   lanĉe(()=>{
@@ -155,8 +163,8 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     // hofmann-aparato
     aparato = Lab.hofmanaparato("hofman",O2_ellaso,H2_ellaso); // elfluo = 100ml, t.e. malplena
     // du provtubojp por kapti gason
-    ptubo1 = Lab.provtubo("provtubo_1",0,15,80,175);
-    ptubo2 = Lab.provtubo("provtubo_2",0,15,80,182);
+    provtubo1 = Lab.provtubo("provtubo_1",0,15,80,175);
+    provtubo2 = Lab.provtubo("provtubo_2",0,15,80,182);
     // tensimezurilo
     voltmetro = new LabMezurilo("voltmetro",30,"V");
 
@@ -188,8 +196,8 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     lab.metu(drato_plus,{id:'drato_minus',x:0,y:0});
     lab.metu(voltmetro,{id: "voltmetro", x:10, y:ALTO-90});
     lab.metu(aparato,{id: "malsupre", x:X_HOFMANN, y:ALTO-20});
-    lab.metu(ptubo1,{id: "maldekstre", x:X_HOFMANN, y: -95});
-    lab.metu(ptubo2,{id: "dekstre", x:X_HOFMANN+140, y: -95});
+    lab.metu(provtubo1,{id: "maldekstre", x:X_HOFMANN, y: -95});
+    lab.metu(provtubo2,{id: "dekstre", x:X_HOFMANN+140, y: -95});
     /* PROVIZORE ŝparu kalkultempon por la animacio:
     lab.metu(keno,{id: "keno", x:X_HOFMANN+190, y:ALTO-20});
     lab.metu(kandelo,{id: "kandelo", x:X_HOFMANN+230, y:ALTO-20});

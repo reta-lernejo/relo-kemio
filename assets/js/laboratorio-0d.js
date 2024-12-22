@@ -295,12 +295,24 @@ class LabProvtubo extends LabGlaso {
         if (klino) {
             //const a = (klino+360)%360; // tolerante negativajn angulojn
             const g1 = Lab.e("g",{
+                //id: `${id}_g`,
                 transform: `rotate(${klino} ${w/2} ${h})`
             });
             this.g.querySelector(".ombro").remove();
             g1.append(...this.g.children)
             this.g.append(g1)
         }
+    }
+
+    ŝtopu() {
+        const w = this.larĝo;
+        const h = this.alto;
+        const ŝtopilo = Lab.e("polyline",{
+            points: `${1},${-h+10},${w-1},${-h+10} ${w+1},${-h-5} ${-1},${-h-5} ${1},${-h+10}`,
+            class: "plasto"
+        });
+        const g1 = this.g.querySelector("g");
+        g1.prepend(ŝtopilo);
     }
 }
 
@@ -1079,13 +1091,13 @@ class LabHofmanAparato  extends LabUjo {
 
             // ŝanĝu ankaŭ la altecon de la vezikanimacio
             const enh1 = this.g.querySelector("#enhavo_1_hofman rect");
-            const h1 = parseInt(enh1.getAttribute("height"));
+            const h1 = parseFloat(enh1.getAttribute("height"));
 
             //console.debug("O2: "+this.ml_O2+" h1: "+h1);
 
             for (const am of ĉiuj("#vezikoj_O2 animateMotion")) {
                 const p = am.parentElement;
-                const py = parseInt(p.getAttribute("y"));
+                const py = parseFloat(p.getAttribute("y"));
                 Lab.a(am,{        
                     path: `M0,0 L0,${-h1-py}`
                 });
@@ -1096,13 +1108,13 @@ class LabHofmanAparato  extends LabUjo {
             this.enhavo(this.ml_H2 + 2/3*ml,"2");
 
             const enh2 = this.g.querySelector("#enhavo_2_hofman rect");
-            const h2 = parseInt(enh2.getAttribute("height"));
+            const h2 = parseFloat(enh2.getAttribute("height"));
 
             //console.debug("H2: "+this.ml_H2+" h2: "+h2);
 
             for (const am of ĉiuj("#vezikoj_H2 animateMotion")) {
                 const p = am.parentElement;
-                const py = parseInt(p.getAttribute("y"));
+                const py = parseFloat(p.getAttribute("y"));
                 Lab.a(am,{        
                     path: `M0,0 L0,${-h2-py}`
                 });
@@ -1114,6 +1126,7 @@ class LabHofmanAparato  extends LabUjo {
     ellaso(ujo="1",ml,fine) {
         const daŭro = "3"; // s
         const enh = this.g.querySelector(`#enhavo_${ujo}_hofman rect`);
+        const enh_ = this.g.querySelector(`#enhavo_${3-ujo}_hofman rect`);
         const rez = this.g.querySelector("#enhavo_r_hofman");
 
         const y0 = parseFloat(enh.getAttribute("y"));
@@ -1128,6 +1141,24 @@ class LabHofmanAparato  extends LabUjo {
 
         const h1 = Math.min(this.nulo,h0 + ml*4);
         const y1 = y0 - (h1-h0);
+
+        // kiom da ml ni efektive ellasas?
+        const ml_ = (h1-h0)/4;
+        const yr = parseFloat(rez.getAttribute("y"));
+        const hr = parseFloat(rez.getAttribute("height"));
+                            // ligtubo estas ĉe y=-80
+        const hr1 = Math.min(this.rnulo-80,yr<-300?hr-ml_:hr-4*ml_);
+        const yr1 = yr - (hr1-hr); 
+
+        const yy = parseFloat(enh_.getAttribute("y"));
+
+        // yr1 ne atingu sub y1 aŭ yy
+        if (yr1 > y1 || yr1 > yy) {
+            // jam ne plu sufiĉe da rezerva likgvo, finu tuj
+            console.info("Ne plu sufiĉe da likvo en rezervujo!");
+            if (fine) fine();
+            return;
+        }
         
         const ah = Lab.e("animate",{
             attributeName: "height",
@@ -1146,14 +1177,6 @@ class LabHofmanAparato  extends LabUjo {
             fill: "freeze"
         });
           
-        // kiom da ml ni efektive ellasas?
-        const ml_ = (h1-h0)/4;
-        const yr = parseFloat(rez.getAttribute("y"));
-        const hr = parseFloat(rez.getAttribute("height"));
-                            // ligtubo estas ĉe y=-80
-        const hr1 = Math.min(this.rnulo-80,yr<-300?hr-ml_:hr-4*ml_);
-        const yr1 = yr - (hr1-hr); 
-
         const arh = Lab.e("animate",{
             attributeName: "height",
             from: hr,
@@ -1182,6 +1205,11 @@ class LabHofmanAparato  extends LabUjo {
 
         // persistigu la ŝanĝojn koordinatojn
         setTimeout(() => {
+            // forigu animaciojn por ne bloki postajn adaptojn de y,height
+            enh.textContent = '';
+            rez.textContent = '';
+
+            // adaptu enhavon
             if (ujo == "1") this.enhavo(Math.max(0,this.ml_O2-ml_),ujo);
             else this.enhavo(Math.max(0,this.ml_H2-ml_),ujo);
             // tion devus fari jam .enhavo()...?
@@ -2610,8 +2638,7 @@ class Laboratorio extends LabSVG {
 
     /** Metas novajn ilon en la aranĝon de la laboratorio,
      * @param {object} ilo la ilo, kreita per ujo() k.s.
-     * @param {number} x x-koordinato (0=malsdesktre)
-     * @param {number} y y-koordinato (0=supre)
+     * @param {object} loko objekto kun id - nomo kaj x,y-koordinatoj
      */
     metu(ilo,loko) {
         // ĉu loko estas nomo aŭ objekto?
