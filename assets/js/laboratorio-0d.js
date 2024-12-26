@@ -1484,17 +1484,15 @@ class LabKandelo extends LabIlo {
         super(id);
         this.g = Lab.e("g", {
             id: id
-        });
-            
-        // ena grupo
-        const g1 = Lab.e("g",{});
+        });           
 
         // vakso 
         const v = Lab.e("rect",{
             y: -h,
             width: w,
             height: h,
-            fill: "url(#vakso)"
+            fill: "url(#vakso)",
+            class: "vakso"
         });
   
         // meĉo 
@@ -1504,6 +1502,16 @@ class LabKandelo extends LabIlo {
             stroke: "black",
             fill: "none"
         });
+
+        // kunigu ĉion
+        // ena grupo
+        //const g1 = Lab.e("g",{});
+        //g1.append(v,m);
+
+        this.g.append(v,m);
+    }
+
+    flamigu() {
 
         // flamo 
         const p1 = `M${w/2-3},${-h-2} Q${w/2-3},${-h-22} ${w/2},${-h-25} Q${w/2+5},${-h-22} ${w/2+3},${-h-2}`;
@@ -1562,10 +1570,7 @@ class LabKandelo extends LabIlo {
         });
         b.append(ba1,ba2);
 
-        // kunigu ĉion
-        g1.append(v,m,f,b);
-
-        this.g.append(g1);
+        this.g.append(f,b);
     }
 }
 

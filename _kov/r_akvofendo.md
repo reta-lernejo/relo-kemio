@@ -198,9 +198,11 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     lab.metu(aparato,{id: "malsupre", x:X_HOFMANN, y:ALTO-20});
     lab.metu(provtubo1,{id: "maldekstre", x:X_HOFMANN, y: -95});
     lab.metu(provtubo2,{id: "dekstre", x:X_HOFMANN+140, y: -95});
+
+    //lab.metu(kandelo,{id: "kandelo", x:80, y:ALTO-91});
+    lab.metu(kandelo,{id: "kandelo", x:420, y:ALTO});
     /* PROVIZORE ŝparu kalkultempon por la animacio:
     lab.metu(keno,{id: "keno", x:X_HOFMANN+190, y:ALTO-20});
-    lab.metu(kandelo,{id: "kandelo", x:X_HOFMANN+230, y:ALTO-20});
 */
 
     // ŝaltilo por la elektro
@@ -223,6 +225,10 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
       }
       .likvo {
         fill: hsla(236, 14%, 75%, 0.4);
+      }
+      .vakso {
+        stroke: black;
+        stroke-width: 1.0;
       }
       .veziko {
         fill: url(#vitro);
