@@ -1383,12 +1383,17 @@ class LabKeno extends LabIlo {
      */
     constructor(id,w=4,h=200,klino=4) {
         super(id);
+        this.larĝo = w;
+        this.alto = h;
+
         this.g = Lab.e("g", {
             id: id
         });
             
         // ena grupo
-        const g1 = Lab.e("g",{});
+        const g1 = Lab.e("g",{
+            id: `${this.id}_bastono`
+        });
 
         // bastono 
         const b = Lab.e("rect",{
@@ -1398,7 +1403,7 @@ class LabKeno extends LabIlo {
             fill: "url(#ligno)"
         });
 
-        // arda pinto
+        // nigra pinto
         const e1 = Lab.e("ellipse",{
             cx: 5/8*w,
             cy: -h,
@@ -1407,7 +1412,26 @@ class LabKeno extends LabIlo {
             fill: "black",
             filter: "url(#svago)"
         });
+
+        
+        // kunigu ĉiujn elementojn
+        g1.append(b,e1);
+
+        // aldonu klinon
+        if (klino) {
+            Lab.a(g1,{
+                transform: `rotate(${klino})`
+            });
+        };
+        this.g.append(g1);
+    }
+
+    ardigu() {
+        const w = this.larĝo;
+        const h = this.alto;
+        
         const e2 = Lab.e("ellipse",{
+            id: `${this.id}_rugho`,
             cx: 19/40*w,
             cy: -h,
             rx: 18/40*w,
@@ -1416,6 +1440,7 @@ class LabKeno extends LabIlo {
             filter: "url(#svago)"
         });
         const e3 = Lab.e("ellipse",{
+            id: `${this.id}_flavo`,
             cx: 1/2*w,
             cy: -h+1,
             rx: 17/40*w,
@@ -1426,6 +1451,7 @@ class LabKeno extends LabIlo {
 
         // ardbrilo
         const a = Lab.e("ellipse",{
+            id: `${this.id}_brilo`,
             cx: 1/2*w,
             cy: -h+5,
             rx: 10,
@@ -1455,18 +1481,16 @@ class LabKeno extends LabIlo {
             begin: "kresko.end",
             fill: "freeze",
         });  
-        
-        // kunigu ĉiujn elementojn
-        a.append(a1,a2);
-        g1.append(b,e1,e2,e3,a);
 
-        // aldonu klinon
-        if (klino) {
-            Lab.a(g1,{
-                transform: `rotate(${klino})`
-            });
-        };
-        this.g.append(g1);
+        a.append(a1,a2);
+        const g1 = this.g.querySelector(`#${this.id}_bastono`);
+        g1.append(e2,e3,a);
+    }
+
+    estingu() {
+        this.g.querySelector(`#${this.id}_brilo`).remove();
+        this.g.querySelector(`#${this.id}_flavo`).remove();
+        this.g.querySelector(`#${this.id}_rugho`).remove();
     }
 }
 

@@ -12,10 +12,10 @@ class Stato {
     }
 
     /**
-     * transiras al nova stato
+     * transiras al nova stato, se koncerna transiro estas difinita kaj la gard-kondiĉo validas
      * @param {*} al - la nova stato
      */
-    transiru(al) {
+    transiru_al(al) {
         // trovu la konvenan transiron
         for (t of this.transiroj) {
             if (t[0] == this.stato && t[1] == al) {
@@ -29,5 +29,25 @@ class Stato {
                 }
             }
         }
+    }
+
+    /**
+     * transiras al iu nova stato, se troviĝas transiro forlasanta la nunan staton, kies gard-kondiĉo validas
+     */
+    transiru() {
+        // trovu la konvenan transiron
+        for (t of this.transiroj) {
+            if (t[0] == this.stato) {
+                const gardo = t[3];
+                if (gardo === undefined || gardo()) { // gardo plenumita
+                    const ago = t[2];
+                    ago();
+                    this.stato = t[1];
+                    return;
+                }
+            }
+        }
+        // neniu konvena celstato troviĝis
+        throw Error(`Ne troviĝas transiro el nuna stato '${this.stato}', kies gardo estas valida!`)
     }
 }

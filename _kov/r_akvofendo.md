@@ -190,6 +190,10 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
 
     // keno por testo
     keno = new LabKeno("keno",4,150,5);
+    kenstato = new Stato("nebrula",[
+      ["nebrula","brula",keno.ardigu.bind(keno)],
+      ["brula","nebrula",keno.estingu.bind(keno)]
+    ]);
     // kandelo por testo
     kandelo = new LabKandelo("kandelo",40,16);
     kandelstato = new Stato("nebrula",[
@@ -206,9 +210,8 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
 
     //lab.metu(kandelo,{id: "kandelo", x:80, y:ALTO-91});
     lab.metu(kandelo,{id: "kandelo", x:420, y:ALTO});
-    /* PROVIZORE ŝparu kalkultempon por la animacio:
+    /* PROVIZORE ŝparu kalkultempon por la animacio: */
     lab.metu(keno,{id: "keno", x:X_HOFMANN+190, y:ALTO-20});
-*/
 
     // ŝaltilo por la elektro
     const ŝaltilo = ĝi("#_plato_voltmetro .ŝaltilo");
@@ -217,11 +220,11 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     });
     // bruligi/estingi kandelon
     lab.klak_reago(kandelo,(k) => {
-      if (kandelstato.stato == "nebrula") {
-        kandelstato.transiru("brula");
-      } else {
-        kandelstato.transiru("nebrula");
-      }
+      kandelstato.transiru();
+    });
+    // bruligi/estingi kenon
+    lab.klak_reago(keno,(k) => {
+      kenstato.transiru();
     });
 
   });
