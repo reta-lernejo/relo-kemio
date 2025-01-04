@@ -37,23 +37,6 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
   const LARĜO = 500;
   const X_HOFMANN = 200;
 
-  function elektro() {
-    //aparato.enhavo(eksperimento.ml);
-    //mezurilo.valoro(0);
-    const ŝaltilo = ĝi("#_plato_voltmetro .ŝaltilo");
-    if (voltmetro.val <= 0) {
-      // ŝaltu...
-      ŝaltilo.classList.add("ŝaltita");
-      voltmetro.valoro(19.8);
-      vezikoj();
-    } else {
-      // malŝaltu
-      ŝaltilo.classList.remove("ŝaltita");
-      voltmetro.valoro(0);
-      vezikoj_haltu();
-    }
-  }
-
   function vezikoj_haltu() {
     // ŝanĝu repeatCount al 1 (lasta)
     for (const am of ĉiuj("#vezikoj_H2 animateMotion, #vezikoj_O2 animateMotion")) {
@@ -120,7 +103,7 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
       prokrastu(() => gasiĝo(ml), ms);
     } else {
       // haltigu la aparaton
-      elektro();
+      voltmetrostato.transiru("malŝaltita");
     }
   }
 
@@ -203,7 +186,25 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
 
     lab.metu(drato_minus,{id:'drato_minus',x:0,y:0});
     lab.metu(drato_plus,{id:'drato_minus',x:0,y:0});
+
     lab.metu(voltmetro,{id: "voltmetro", x:10, y:ALTO-90});
+    voltmetrostato = new Stato("malŝaltita",[
+      ["malŝaltita","ŝaltita",() => {
+        // ŝaltu...
+        const ŝaltilo = voltmetro.trovu_parton(".ŝaltilo");
+        ŝaltilo.classList.add("ŝaltita");
+        voltmetro.valoro(19.8);
+        vezikoj();
+      }],
+      ["ŝaltita","malŝaltita", () => {
+        const ŝaltilo = voltmetro.trovu_parton(".ŝaltilo");
+        // malŝaltu
+        ŝaltilo.classList.remove("ŝaltita");
+        voltmetro.valoro(0);
+        vezikoj_haltu();
+      }]
+    ]);
+
     lab.metu(aparato,{id: "malsupre", x:X_HOFMANN, y:ALTO-20});
     lab.metu(provtubo1,{id: "maldekstre", x:X_HOFMANN, y: -95});
     lab.metu(provtubo2,{id: "dekstre", x:X_HOFMANN+140, y: -95});
@@ -214,9 +215,9 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     lab.metu(keno,{id: "keno", x:X_HOFMANN+190, y:ALTO-20});
 
     // ŝaltilo por la elektro
-    const ŝaltilo = ĝi("#_plato_voltmetro .ŝaltilo");
+    const ŝaltilo = voltmetro.trovu_parton(".ŝaltilo");
     lab.klak_reago(ŝaltilo,(btn) => {
-      elektro();
+      voltmetrostato.transiru();
     });
     // bruligi/estingi kandelon
     lab.klak_reago(kandelo,(k) => {

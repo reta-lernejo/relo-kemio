@@ -79,7 +79,9 @@
 //     ero_smb(id,r,cls="ero") {
 //     gutoj(gutoj_id,ero_id,n,fonto,celo,fine) {
  
-
+/**
+ * Klaso kiu tenas la elementon <svg> de vektordesegnaĵo kaj ofertas kelkajn aldonajn utilfunkciojn.
+ */
 class LabSVG {
     
     constructor(svg) {
@@ -152,14 +154,54 @@ class LabSVG {
 }
 
 class LabIlo {
-    constructor(id) {
+    constructor(id, klaso="ilo") {
         this.id = id;
+
+        // SVG grupo-elemento, kiu entenas la grafikon de la ilo
+        this.g = Lab.e("g",{
+            id: id,
+            class: klaso
+        });        
+    }
+
+    /**
+     * Kreas identigilon por parto-nomo laŭ la skemo ${id}_${nomo}
+     * @param {*} nomo 
+     */
+    parto_id(nomo) {
+        return `${this.id}_${nomo}`;
+    }
+
+    /**
+     * Redonas parton de ilo laŭ ties nomo. Necesas doni al la partoj
+     * identigilon ${id}_${nomo} por ke tio funkciu
+     * @param {*} nomo 
+     */
+    parto(nomo) {
+        return this.g.querySelector(`#${this.parto_id(nomo)}`);
+    }
+
+    /**
+     * Trovas SVG-elementon ene the 
+     * @param {*} elektilo 
+     */
+    trovu_parton(elektilo) {
+        return this.g.querySelector(elektilo);
+    }
+
+    /**
+     * Forigas parton kun la donita nomo
+     * @param {*} nomo 
+     */
+    forigu(nomo) {
+        const p = this.parto(nomo);
+        if (p) p.remove();
     }
 }
 
 class LabUjo extends LabIlo {
-    constructor(id) {
-        super(id);
+    constructor(id,klaso="ujo") {
+        super(id,klaso);
     }
 }
 
@@ -173,11 +215,10 @@ class LabGlaso extends LabUjo {
      * @param h {number} alteco, apriore 300
      */
     constructor(id, w=100, h=200) {
-        super(id);
+        super(id,"ujo glaso");
         this.larĝo = w;
         this.alto = h;
 
-        const g = Lab.e("g", { id: `_glaso_${id}`, class: "ujo glaso" });
         // komencante en la supra maldekstra angulo kontraŭ horloĝa direkto...
         const bordo = `M${-w/20},${-h} Q0,${-h} 0,${-h+5} L0,${-w/20} Q0,8 ${w/2},8 Q${w},8 ${w},-5 L${w},${-h+5} Q${w},${-h} ${w+w/20},${-h} Z`;
 
@@ -195,8 +236,7 @@ class LabGlaso extends LabUjo {
             cx: .6*w, cy: 5, rx: .6*w, ry: 8,
             class: "ombro"
         });
-        g.append(ombro,ujo);
-        this.g = g;
+        this.g.append(ombro,ujo);
     }
 
     /**
@@ -207,7 +247,7 @@ class LabGlaso extends LabUjo {
      */
     enhavo(enh,aldone) {
         //const glaso_id = `_glaso_${this.id}`;
-        const enh_id = `_glaso_${this.id}_enhavo`;
+        const enh_id = this.parto_id("enhavo");
 
         let nova_enh = enh;
         if (typeof enh === "number") {
@@ -233,9 +273,9 @@ class LabGlaso extends LabUjo {
             });
         };
 
-        const c_id = `_clp_glaso_${this.id}`;
+        const c_id = this.parto_id("limigo");
 
-        const malnova_enh = this.g.querySelector('#'+enh_id);
+        const malnova_enh = this.parto("enhavo");
         if (malnova_enh && aldone) {
             // aldnou novan al malnova enhavo
             malnova_enh.append(nova_enh);
@@ -252,7 +292,7 @@ class LabGlaso extends LabUjo {
             });
     
             ge.append(nova_enh);
-            const ujo = this.g.querySelector(".vitro");
+            const ujo = this.trovu_parton(".vitro");
             //this.g.prepend(limigo,ge);
             this.g.prepend(limigo);
             this.g.insertBefore(ge,ujo);      
@@ -264,7 +304,7 @@ class LabGlaso extends LabUjo {
      */
     surfaco() {
         return {
-            id: `_glaso_${this.id}_enhavo`,
+            id: this.parto_id("enhavo"),
             x: this.larĝo/2,
             y: -this.enh_alto
         }
@@ -275,7 +315,7 @@ class LabGlaso extends LabUjo {
      * @param {string} elektilo CSS-pad-elektilo por trovi la enhavon (se iel manipulita)
      */
     enhavlimigo(elektilo = "path.likvo") {
-        return this.g.querySelector(elektilo).getAttribute("d");
+        return this.trovu_parton(elektilo).getAttribute("d");
     }
 }
 
@@ -311,7 +351,7 @@ class LabProvtubo extends LabGlaso {
             points: `${1},${-h+10},${w-1},${-h+10} ${w+1},${-h-5} ${-1},${-h-5} ${1},${-h+10}`,
             class: "plasto"
         });
-        const g1 = this.g.querySelector("g");
+        const g1 = this.trovu_parton("g");
         g1.prepend(ŝtopilo);
     }
 }
@@ -328,8 +368,7 @@ class LabGutbotelo extends LabUjo {
      * 
      */    
     constructor(id,etikedo,pleno=0,klino=0) {
-        super(id);
-        const g = Lab.e("g", { class: "ujo gutbotelo" });
+        super(id,"ujo gutbotelo");
 
         // bordo de la vitrujo (kaj do ankaŭ limo de enhavo)
         const bordo = "M0,-100 L0,-4 Q0,0 4,0 Q20,3 36,0 Q40,0 40,-4 L40,-100 Z";
@@ -367,7 +406,7 @@ class LabGutbotelo extends LabUjo {
             class: "plasto"
         });
         const pinto = Lab.e("line",{
-            id: `_gutbotelo_${id}_pinto`,
+            id: this.parto_id("pinto"),
             x1: 18, x2: 22, y1: -130, y2: -130
         });
         // surskribo
@@ -436,7 +475,7 @@ class LabGutbotelo extends LabUjo {
         // alternative ni povus transdoni la ujo-grupon forlasante la pinto-elementon, 
         // la ujo momente ne havas .id
         return {
-            id: `_gutbotelo_${this.id}_pinto`,
+            id: this.parto_id("pinto"),
             x:20,
             y:-130
         };
@@ -453,13 +492,8 @@ class LabKonusFlakono extends LabUjo {
      * @param {number} h alteco
      */
     constructor(id,pleno=0,w=100,h=200) {
-        super(id);
+        super(id,"ujo konusflakono");
         this.ml = pleno;
-
-        this.g = Lab.e("g",{
-            class: "ujo konusflakono",
-            id: id
-        });
 
         // ujo
         const kol = 20;
@@ -471,7 +505,7 @@ class LabKonusFlakono extends LabUjo {
         });
 
         // skalo
-        const streko = "q5,2 30,2"
+        //const streko = "q5,2 30,2"
         const skalo = Lab.e("path", {
             d: `M14,${-this.enhavalto(25)}q5,1 15,1 `
              + `M12,${-this.enhavalto(50)}q5,1 25,1 `
@@ -482,7 +516,7 @@ class LabKonusFlakono extends LabUjo {
 
         // enhavo
         if (pleno>-1) {
-            const c_id = `_clp_${id}`;
+            const c_id = this.parto_id("limigo");
             const limigo = Lab.limigo(c_id, 
                 Lab.e("path",{
                     d: bordo
@@ -523,7 +557,7 @@ class LabKonusFlakono extends LabUjo {
      * Redonas mezpunktion de la surfaco en relativaj koordinatoj
      */
     surfaco() {
-        const enh = this.g.querySelector(".likvo");
+        const enh = this.trovu_parton(".likvo");
         return ({
             id: this.id,
             x: enh.getAttribute("x")+enh.getAttribute("width")/2, 
@@ -540,7 +574,7 @@ class LabKonusFlakono extends LabUjo {
 
         this.ml += ml;
         const eh = this.enhavalto(this.ml);
-        const enh = this.g.querySelector(".likvo");
+        const enh = this.trovu_parton(".likvo");
         Lab.a(enh,{ 
             y: -eh, height: eh+8
         });
@@ -592,8 +626,9 @@ class LabBureto  extends LabUjo {
      * @param {number} ml volumeno elfluita en ml, 0 estas la plej supra streko, 50 la plej malsupra, -1 malplena
      */
     constructor(id,ml=0) {
+        super(id),"ujo bureto";
+
         const h=300;
-        super(id);
         this.ml = ml;
         this.nulo = h-20; // y-pozicio de skalo=0 mezurite de ellaso
 
@@ -604,10 +639,6 @@ class LabBureto  extends LabUjo {
                 // dekstra flanko de 20,0 al 32,-h
             + `L22,-5 L25,-20 L25,-40 L26,-40 L26,-50 L25,-50 L25,-60 L32,-75 L32,${-h} Z`
         
-        this.g = Lab.e("g",{
-            id: id,
-            class: "ujo bureto"
-        });
         const ujo = Lab.e("path",{
             d: bordo,
             class: "vitro"
@@ -755,8 +786,9 @@ class LabHofmanAparato  extends LabUjo {
      * @param {string} id unika il-nomo
      */
     constructor(id,kranreago_O2,kranreago_H2) {
+        super(id,"ujo hofmanaparato");
+
         const h = 300;
-        super(id);
         this.ml_H2 = 0;
         this.ml_O2 = 0;
         this.nulo = h+30; // y-pozicio de maksimuma pleniĝo de dekstra/maldekstra tubo (skala 0 estas ĉe h)
@@ -828,7 +860,7 @@ class LabHofmanAparato  extends LabUjo {
             // al la volumeno de cilindro, aparte por
             // oblikvaj anguloj, sed proksimumo eble sufiĉas
             // aliokaze oni devus ekzakte elkalkuli 
-            const enh_id = `enhavo_${ujo}_hofman`;
+            const enh_id = this.parto_id(`enhavo_${ujo}`);
             const x =  ujo=="1"? 8 : LabHofmanAparato.tubdistanco+30;
 
             const ge = Lab.e("g", {
@@ -847,11 +879,6 @@ class LabHofmanAparato  extends LabUjo {
             this.g.append(limigo,ge);
         }.bind(this);
 
-        // la ĉefa grupo de la aparato
-        this.g = Lab.e("g",{
-            id: id,
-            class: "ujo hofmanaparato"
-        });
         // maldekstra kaj dekstra ujoj
         const ujo_1 = Lab.e("path",{
             d: bordo_1,
@@ -978,7 +1005,7 @@ class LabHofmanAparato  extends LabUjo {
         );
         const enhavo_r = Lab.e("rect",
         {
-            id: "enhavo_r_hofman",
+            id: this.parto_id("rezervujo_enhavo"),
             x: lt2+5,
             y: -this.rnulo + 1, 
             width: 52,
@@ -1048,7 +1075,8 @@ class LabHofmanAparato  extends LabUjo {
             this.ml_H2 = ml;
         
         const h = (ujo == "r"? this.rnulo : this.nulo) - 4*ml;
-        const enh = this.g.querySelector(`#enhavo_${ujo}_hofman rect`);
+        const enh_id = this.parto_id(`enhavo_${ujo}`)
+        const enh = this.trovu_parton(`#${enh_id} rect`);
         Lab.a(enh, {
             height: h,
             y: -h
@@ -1061,7 +1089,7 @@ class LabHofmanAparato  extends LabUjo {
      * @param {*} ujo  1 = maldekstra, 2 = dekstra ujo
      */
     vezikoj(vezikoj, ujo="1") {
-        const enh = this.g.querySelector(`#enhavo_${ujo}_hofman`);
+        const enh = this.parto(`enhavo_${ujo}`);
         const x =  ujo=="1"? 8 : LabHofmanAparato.tubdistanco+30;
         Lab.a(vezikoj,{
             transform: `translate(${x},0)`
@@ -1077,7 +1105,7 @@ class LabHofmanAparato  extends LabUjo {
      */
     enhavlimigo(ujo="1") {
         const elektilo = `#_clp${ujo}_hofman path`;
-        const clp = this.g.querySelector(elektilo);
+        const clp = this.trovu_parton(elektilo);
         if (clp) return clp.getAttribute("d");
     }    
 
@@ -1090,7 +1118,8 @@ class LabHofmanAparato  extends LabUjo {
             this.enhavo(this.ml_O2 + 1/3*ml,"1");
 
             // ŝanĝu ankaŭ la altecon de la vezikanimacio
-            const enh1 = this.g.querySelector("#enhavo_1_hofman rect");
+            const enh_id = this.parto_id("enhavo_1");
+            const enh1 = this.trovu_parton(`#${enh_id} rect`);
             const h1 = parseFloat(enh1.getAttribute("height"));
 
             //console.debug("O2: "+this.ml_O2+" h1: "+h1);
@@ -1107,7 +1136,8 @@ class LabHofmanAparato  extends LabUjo {
         if (this.krano_2.fermita) {
             this.enhavo(this.ml_H2 + 2/3*ml,"2");
 
-            const enh2 = this.g.querySelector("#enhavo_2_hofman rect");
+            const enh_id = this.parto_id("enhavo_2");
+            const enh2 = this.trovu_parton(`#${enh_id} rect`);
             const h2 = parseFloat(enh2.getAttribute("height"));
 
             //console.debug("H2: "+this.ml_H2+" h2: "+h2);
@@ -1125,9 +1155,11 @@ class LabHofmanAparato  extends LabUjo {
 
     ellaso(ujo="1",ml,fine) {
         const daŭro = "3"; // s
-        const enh = this.g.querySelector(`#enhavo_${ujo}_hofman rect`);
-        const enh_ = this.g.querySelector(`#enhavo_${3-ujo}_hofman rect`);
-        const rez = this.g.querySelector("#enhavo_r_hofman");
+        const a_id = this.parto_id(`enhavo_${ujo}`);
+        const b_id = this.parto_id(`enhavo_${3-ujo}`);
+        const enh = this.trovu_parton(`#${a_id} rect`);
+        const enh_ = this.trovu_parton(`#${b_id} rect`);
+        const rez = this.parto("rezervujo_enhavo");
 
         const y0 = parseFloat(enh.getAttribute("y"));
         const h0 = parseFloat(enh.getAttribute("height"));
@@ -1348,10 +1380,7 @@ class LabBastono extends LabIlo {
      * @param {number} klino klinangulo
      */
     constructor(id,w=5,h=200,klino=4) {
-        super(id);
-        this.g = Lab.e("g", {
-            id: id,
-            class: "vitro"});
+        super(id,"vitro");
             
         const r = Lab.e("rect",{
             width: w,
@@ -1382,17 +1411,13 @@ class LabKeno extends LabIlo {
      * @param {number} klino klinangulo
      */
     constructor(id,w=4,h=200,klino=4) {
-        super(id);
+        super(id,"keno");
         this.larĝo = w;
         this.alto = h;
-
-        this.g = Lab.e("g", {
-            id: id
-        });
             
         // ena grupo
         const g1 = Lab.e("g",{
-            id: `${this.id}_bastono`
+            id: this.parto_id("bastono")
         });
 
         // bastono 
@@ -1483,14 +1508,14 @@ class LabKeno extends LabIlo {
         });  
 
         a.append(a1,a2);
-        const g1 = this.g.querySelector(`#${this.id}_bastono`);
+        const g1 = this.parto("bastono");
         g1.append(e2,e3,a);
     }
 
     estingu() {
-        this.g.querySelector(`#${this.id}_brilo`).remove();
-        this.g.querySelector(`#${this.id}_flavo`).remove();
-        this.g.querySelector(`#${this.id}_rugho`).remove();
+        this.forigu("brilo");
+        this.forigu("flavo");
+        this.forigu("rugho");
     }
 }
 
@@ -1505,13 +1530,9 @@ class LabKandelo extends LabIlo {
      * @param {number} h alto
      */
     constructor(id,w=14,h=100) {
-        super(id);
+        super(id,"kandelo");
         this.larĝo = w;
-        this.alto = h;
-
-        this.g = Lab.e("g", {
-            id: id
-        });           
+        this.alto = h;  
 
         // vakso 
         const v = Lab.e("rect",{
@@ -1605,8 +1626,8 @@ class LabKandelo extends LabIlo {
     }
 
     estingu() {
-        this.g.querySelector(`#${this.id}_flamo`).remove();
-        this.g.querySelector(`#${this.id}_brilo`).remove();
+        this.forigu("flamo");
+        this.forigu("brilo");
     }
 }
 
@@ -1621,10 +1642,7 @@ class LabSondilo extends LabIlo {
      * @param {number} klino klinangulo
      */
     constructor(id,w=5,h=200,klino=4,teksto='') {
-        super(id);
-        this.g = Lab.e("g", {
-            id: id,
-            class: "sondilo"});
+        super(id,"sondilo");
 
         const g1 = Lab.e("g");
           
@@ -1688,11 +1706,8 @@ class LabCiferplato extends LabIlo {
      * @param {*} teksto 
      */
     constructor(id,w=60,h=30,r=5,teksto='') {
-        super(id);
-        const cplato = Lab.e("g",{
-            id: `_plato_${id}`,
-            class: "ciferplato"
-        });
+        super(id,"ciferplato");
+
         const kadro = Lab.e("rect",{
             width: w, height: h,
             rx: r
@@ -1700,9 +1715,9 @@ class LabCiferplato extends LabIlo {
         const tx = Lab.e("text",{
             x: w/12, y: h/2,
             class: "valoro"
-        },teksto);
-        cplato.append(kadro,tx);
-        this.g = cplato;
+        }, teksto);
+
+        this.g.append(kadro,tx);
     }
 
     /**
@@ -1727,7 +1742,7 @@ class LabMezurilo extends LabIlo {
      * @param {*} r rando
      */
     constructor(id,max,unuo='',w=120,h=80,r=5) {
-        super(id);
+        super(id,"mezurilo");
 
         const rmin = h/2;
         const lstrek = w/16;
@@ -1736,10 +1751,6 @@ class LabMezurilo extends LabIlo {
         this.max = max;
         this.O = [w/2,rmin+lstrek+20];
 
-        const cplato = Lab.e("g",{
-            id: `_plato_${id}`,
-            class: "ciferplato"
-        });
         const kadro = Lab.e("rect",{
             width: w, height: h,
             rx: r
@@ -1748,7 +1759,9 @@ class LabMezurilo extends LabIlo {
         Lab.a(skalo,{
             transform: `translate(${this.O[0]} ${this.O[1]}) rotate(${-150})`
         });
-        cplato.append(kadro,skalo);
+
+        this.g.append(kadro,skalo);
+
         // nombroj ĉe la skalo
         for (let t=0; t<=max/10; t++) {
             const vt = Lab.e("text",{
@@ -1756,7 +1769,7 @@ class LabMezurilo extends LabIlo {
                 transform: `rotate(${-60+t*10*120/max} ${this.O[0]} ${this.O[1]})`,
                 class: "nombro"
             },""+t*10);
-            cplato.append(vt);
+            this.g.append(vt);
         }
         const tx = Lab.e("text",{
             x: w/2, y: h*2/3,
@@ -1778,8 +1791,7 @@ class LabMezurilo extends LabIlo {
             d: `M${w},${h*3/4}l4,0l0,5l-4,0z`,
             class: "klemo klemo_2"
         });
-        cplato.append(tx,montrilo,ŝaltilo,klemo1,klemo2);
-        this.g = cplato;
+        this.g.append(tx,montrilo,ŝaltilo,klemo1,klemo2);
     }
 
     /**
@@ -1827,8 +1839,7 @@ class LabPHIndikilo extends LabIlo {
      * @param {number} max maksimuma malgranda pH-valoro 
      */
     constructor(id,r,min=1,max=14) {
-        super(id);
-        this.g = Lab.e("g", {id: id, class: "indikilo"});
+        super(id,"pHindikilo");
         const c = Lab.e("circle",{r: r});
 
         const angulo = 360/(max-min+1);
@@ -1895,7 +1906,7 @@ class LabPHIndikilo extends LabIlo {
      */
     makulo(pH,nevidebla) {
         const h = LabPHIndikilo.pH_koloro(pH);
-        const makulo = this.g.querySelector("ellipse.makulo");
+        const makulo = this.trovu_parton("ellipse.makulo");
         Lab.a(makulo,{  
             fill: `hsl(${h},70%,50%)`,
             "fill-opacity": 0
@@ -1938,11 +1949,8 @@ class LabDiagramo extends LabIlo {
      * @param {number} h alto
      */
     constructor(id,X,Y,w=300,h=200) {
-        super(id);
-        this.g = Lab.e("g",{
-            id: id,
-            class: "diagramo"
-        });
+        super(id,"diagramo");
+
         const r = Lab.e("rect",{
             class: "fono",
             width: w,

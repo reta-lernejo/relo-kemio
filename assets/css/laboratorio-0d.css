@@ -96,33 +96,33 @@
     fill-opacity: 1;
 }
 
-.ciferplato rect {
+.mezurilo rect {
     stroke: #913c22;
     stroke-width: 2;
     fill: #fafafa;
 }
 
-.ciferplato .skalo {
+.mezurilo .skalo {
     stroke: black;
     stroke-width: 1;
 }
 
-.ciferplato .nombro {
+.mezurilo .nombro {
     text-anchor: middle;
     font-size: 8pt;
 }
 
-.ciferplato .unuo {
+.mezurilo .unuo {
     text-anchor: middle;
 }
 
-.ciferplato .montrilo {
+.mezurilo .montrilo {
     stroke: #cc3c22;
     stroke-width: 2.0;
     stroke-linecap: round;
 }
 
-.ciferplato .ŝaltilo {
+.mezurilo .ŝaltilo {
     border: 2px solid blue;
     background: yellow;
 }
