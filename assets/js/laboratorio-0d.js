@@ -1482,6 +1482,9 @@ class LabKandelo extends LabIlo {
      */
     constructor(id,w=14,h=100) {
         super(id);
+        this.larĝo = w;
+        this.alto = h;
+
         this.g = Lab.e("g", {
             id: id
         });           
@@ -1512,11 +1515,14 @@ class LabKandelo extends LabIlo {
     }
 
     flamigu() {
+        const w = this.larĝo;
+        const h = this.alto;
 
         // flamo 
         const p1 = `M${w/2-3},${-h-2} Q${w/2-3},${-h-22} ${w/2},${-h-25} Q${w/2+5},${-h-22} ${w/2+3},${-h-2}`;
         const p2 = `M${w/2-3},${-h-2} Q${w/2-2},${-h-20} ${w/2+2},${-h-23} Q${w/2+8},${-h-20} ${w/2+3},${-h-2}`;
         const f = Lab.e("path", {
+            id: `${this.id}_flamo`,
             d: p1,
             fill: "url(#flamo)",
             filter: "url(#svago2)"
@@ -1543,6 +1549,7 @@ class LabKandelo extends LabIlo {
   
         // brilo 
         const b = Lab.e("ellipse",{
+            id: `${this.id}_brilo`,
             cx: w/2+2,
             cy: -h-15,
             rx: 10,
@@ -1571,6 +1578,11 @@ class LabKandelo extends LabIlo {
         b.append(ba1,ba2);
 
         this.g.append(f,b);
+    }
+
+    estingu() {
+        this.g.querySelector(`#${this.id}_flamo`).remove();
+        this.g.querySelector(`#${this.id}_brilo`).remove();
     }
 }
 

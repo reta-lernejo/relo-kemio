@@ -7,6 +7,7 @@ js:
   - sekcio-0b 
   - mathjax/es5/tex-chtml
   - laboratorio-0d
+  - stato-0a
 css:
   - laboratorio-0d
 ---
@@ -191,6 +192,10 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     keno = new LabKeno("keno",4,150,5);
     // kandelo por testo
     kandelo = new LabKandelo("kandelo",40,16);
+    kandelstato = new Stato("nebrula",[
+      ["nebrula","brula",kandelo.flamigu.bind(kandelo)],
+      ["brula","nebrula",kandelo.estingu.bind(kandelo)]
+    ]);
 
     lab.metu(drato_minus,{id:'drato_minus',x:0,y:0});
     lab.metu(drato_plus,{id:'drato_minus',x:0,y:0});
@@ -209,6 +214,14 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     const ŝaltilo = ĝi("#_plato_voltmetro .ŝaltilo");
     lab.klak_reago(ŝaltilo,(btn) => {
       elektro();
+    });
+    // bruligi/estingi kandelon
+    lab.klak_reago(kandelo,(k) => {
+      if (kandelstato.stato == "nebrula") {
+        kandelstato.transiru("brula");
+      } else {
+        kandelstato.transiru("nebrula");
+      }
     });
 
   });
