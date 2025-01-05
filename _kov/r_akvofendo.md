@@ -174,13 +174,20 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     // keno por testo
     keno = new LabKeno("keno",4,150,5);
     kenstato = new Stato("nebrula",[
-      ["nebrula","brula",keno.ardigu.bind(keno)],
-      ["brula","nebrula",keno.estingu.bind(keno)]
+      ["nebrula","arda",keno.ardigu.bind(keno)],
+      ["arda","flama",keno.flamigu.bind(keno)],
+      ["flama","nebrula",keno.estingu.bind(keno)]
     ]);
     // kandelo por testo
     kandelo = new LabKandelo("kandelo",40,16);
     kandelstato = new Stato("nebrula",[
-      ["nebrula","brula",kandelo.flamigu.bind(kandelo)],
+      ["nebrula","brula",() => {
+        kandelo.flamigu();
+        // bruligu ankaŭ la kenon
+        keno.klinu(175,2);
+        //keno.movu(`420 ${500-keno.alto}`,2);
+        keno.movu(`440 ${500+keno.alto-30}`,2,() => {kenstato.transiru("arda");});
+      }],
       ["brula","nebrula",kandelo.estingu.bind(kandelo)]
     ]);
 
