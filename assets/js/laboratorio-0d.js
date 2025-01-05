@@ -220,6 +220,8 @@ class LabIlo {
      * @param {func} poste funkcio poste vokenda
      */
     movu(translate, daŭro, poste) {
+        console.debug("ilo movu "+translate);
+
         //const t0 = this.g.getAttribute("transform");
         const t0 = this.g.transform.baseVal[0].matrix;
         // por tiu ni bezonus la objekton de laboratorio!
@@ -233,13 +235,23 @@ class LabIlo {
 			repeatCount: 1,
             fill: "freeze"
         });
-        a.addEventListener("endEvent",() => {
+        this.g.append(a);
+        
+        // tio ŝajne vokiĝus tuj anst. post 'daŭro' sekundoj:
+        // a.addEventListener("endEvent",
+        
+        setTimeout(() => {
+            console.debug(Date.now()+": ilo movu endEvent");
+
+            this.forigu("movo");
+
             Lab.a(this.g,{
                 transform: `translate(${translate})`
             });
             if (poste) poste();
-        });
-        this.g.append(a);
+        }, daŭro*1000);
+
+        console.debug(Date.now()+": ilo movu beginEvent");
         a.beginElement();
     }
 }
@@ -1486,7 +1498,7 @@ class LabKeno extends LabIlo {
         // aldonu klinon
         if (klino) {
             Lab.a(g1,{
-                transform: `rotate(${klino})`
+                transform: `rotate(${klino} 0 ${-this.alto})`
             });
         };
         this.g.append(g1);
@@ -1499,8 +1511,9 @@ class LabKeno extends LabIlo {
      * @param {func} poste funkcio poste vokenda
      */
     klinu(ka, daŭro, poste) {
+        console.debug("keno klinu "+ka);
         const g1 = this.trovu_parton("g");
-        const a = this.p("movo","animateTransform", {
+        const a = this.p("klino","animateTransform", {
             attributeName: "transform",
             type: "rotate",
             from: `${this.klino} 0 ${-this.alto}`,
@@ -1509,11 +1522,23 @@ class LabKeno extends LabIlo {
             repeatCount: 1,
             fill: "freeze"
         });
-        a.addEventListener("endEvent",() => {
-            this.klino = ka;
-            if (poste) poste();
-        });
         g1.append(a);
+        
+        // tio ŝajne vokiĝus tuj anst. post 'daŭro' sekundoj:
+        // a.addEventListener("endEvent",
+        
+        setTimeout(() => {
+            console.debug(Date.now()+": keno klinu endEvent");
+            this.forigu("klino");
+
+            this.klino = ka;
+            Lab.a(g1,{
+                transform: `rotate(${ka} 0 ${-this.alto})`
+            });
+            if (poste) poste();
+        }, daŭro*1000);
+
+        console.debug(Date.now()+": keno klinu beginEvent");
         a.beginElement();
     }
     
@@ -1521,7 +1546,7 @@ class LabKeno extends LabIlo {
     ardigu() {
         const w = this.larĝo;
         const h = this.alto;
-        
+       
         const e2 = this.p("rugho","ellipse",{
             cx: 19/40*w,
             cy: -h,

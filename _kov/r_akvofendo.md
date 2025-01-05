@@ -113,7 +113,7 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     aparato.ellaso("1",10,() => {
       aparato.krano_1.fermu();
       provtubo1.ŝtopu();
-      lab.metu(provtubo1,{id: "p1_fermita", x: 150, y: -50});
+      lab.metu(provtubo1,{id: "p1_fermita", x: 140, y: -80});
     });
   }
 
@@ -123,7 +123,7 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     aparato.ellaso("2",10,() => {
       aparato.krano_2.fermu();
       provtubo2.ŝtopu();
-      lab.metu(provtubo2,{id: "p2_fermita", x: 400, y: -50});
+      lab.metu(provtubo2,{id: "p2_fermita", x: 400, y: -150});
     });
   }
 
@@ -183,10 +183,19 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     kandelstato = new Stato("nebrula",[
       ["nebrula","brula",() => {
         kandelo.flamigu();
+        console.debug(Date.now()+": >>>>>>>>>>> unua movo");
         // bruligu ankaŭ la kenon
         keno.klinu(175,2);
         //keno.movu(`420 ${500-keno.alto}`,2);
-        keno.movu(`440 ${500+keno.alto-30}`,2,() => {kenstato.transiru("arda");});
+        keno.movu(`440 ${500+keno.alto-30}`,2,() => {
+          kenstato.transiru("arda");
+          // post pliaj du sekundoj movu maldeskren
+          prokrastu(() => {
+            console.debug(Date.now()+": >>>>>>>>>>> prokrastita dua movo");
+            keno.klinu(355,2);
+            keno.movu("160 350",2);
+          }, 2000);
+        });
       }],
       ["brula","nebrula",kandelo.estingu.bind(kandelo)]
     ]);
@@ -213,13 +222,16 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     ]);
 
     lab.metu(aparato,{id: "malsupre", x:X_HOFMANN, y:ALTO-20});
-    lab.metu(provtubo1,{id: "maldekstre", x:X_HOFMANN, y: -95});
-    lab.metu(provtubo2,{id: "dekstre", x:X_HOFMANN+140, y: -95});
 
     //lab.metu(kandelo,{id: "kandelo", x:80, y:ALTO-91});
     lab.metu(kandelo,{id: "kandelo", x:420, y:ALTO});
     /* PROVIZORE ŝparu kalkultempon por la animacio: */
     lab.metu(keno,{id: "keno", x:X_HOFMANN+190, y:ALTO-20});
+
+    // post kandelo kaj keno por ke ili estu super tiuj
+    // tiel oni ŝajnigas enŝovi la kenon/flamon en provtubon
+    lab.metu(provtubo1,{id: "maldekstre", x:X_HOFMANN, y: -95});
+    lab.metu(provtubo2,{id: "dekstre", x:X_HOFMANN+140, y: -95});
 
     // ŝaltilo por la elektro
     const ŝaltilo = voltmetro.trovu_parton(".ŝaltilo");
@@ -231,9 +243,9 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
       kandelstato.transiru();
     });
     // bruligi/estingi kenon
-    lab.klak_reago(keno,(k) => {
-      kenstato.transiru();
-    });
+    //lab.klak_reago(keno,(k) => {
+    //  kenstato.transiru();
+    //});
 
   });
 </script>
