@@ -1,5 +1,5 @@
 
-const e_tabelo = '/assets/kem/PSElementoj-1a.json';
+const e_tabelo = '/relo-kemio/assets/kem/PSElementoj-1a.json';
 
 let json_elementoj = [];   
 let ps_emfazita_elemento;
