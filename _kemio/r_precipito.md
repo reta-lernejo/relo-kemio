@@ -7,7 +7,7 @@ js:
   - folio-0b
   - sekcio-0b 
   - mathjax/es5/tex-chtml
-  - laboratorio-0a
+  - laboratorio-0b
 ---
 
 <!--
