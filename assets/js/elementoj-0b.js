@@ -459,7 +459,7 @@ class Elemento {
     }
 
     static json_element_tabelo(kiam_preta) {
-        const json_url = "/assets/kem/PubChemElements.json";  
+        const json_url = "/relo-kemio/assets/kem/PubChemElements.json";  
         let request = new XMLHttpRequest();
        
         request.open('GET', json_url , true);

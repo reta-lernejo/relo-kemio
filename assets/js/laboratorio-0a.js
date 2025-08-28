@@ -700,11 +700,11 @@ class Laboratorio extends LabSVG {
      * @param {*} ilo 
      * @param {function} reago 
      */
-    klak_reago(ilo,reago) {
-        const i = (typeof ilo === "object")? ilo : this.iloj[_ilo];
-        i.g.addEventListener("click", (event) =>
+    klak_reago(peco,reago) {
+        const p = (peco instanceof LkPeco)? peco.g : peco;
+        p.addEventListener("click", (event) =>
         {
-            reago(i,event);
+            reago(p,event);
         })
     }
 

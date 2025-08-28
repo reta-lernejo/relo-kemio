@@ -485,7 +485,8 @@ class Elemento {
     }
 
     static json_element_tabelo(kiam_preta) {
-        const json_url = "/assets/kem/PubChemElements.json";  
+        // PLIBONIGU: ŝargu la elementojn en la paĝo me per "include"
+        const json_url = "/relo-kemio/assets/kem/PubChemElements.json";  
         let request = new XMLHttpRequest();
        
         request.open('GET', json_url , true);
