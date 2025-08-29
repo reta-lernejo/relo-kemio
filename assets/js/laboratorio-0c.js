@@ -473,6 +473,7 @@ class LabBureto  extends LabUjo {
             class: "krano",
             d: this.krano_fermita
         });
+        this.fermita = true;
 
         // enhavo
         if (ml>=0) {           
@@ -577,6 +578,10 @@ class LabBureto  extends LabUjo {
         });
         this.fermita = true;
     }
+
+    estas_fermita() {
+        return this.fermita;
+    }    
 }
 
 class LabFalaĵo {
