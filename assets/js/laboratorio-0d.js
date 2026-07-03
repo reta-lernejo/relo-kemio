@@ -848,6 +848,7 @@ class LabHofmanAparato  extends LabUjo {
         this.ml_O2 = 0;
         this.nulo = h+30; // y-pozicio de maksimuma pleniĝo de dekstra/maldekstra tubo (skala 0 estas ĉe h)
         this.rnulo = h+70; // y-pozicio de maksimua pleniĝo de la meza rezervujo
+        this.elektra = false;
 
         // ujo el du tuboj kaj interligo
         // x-koordinatoj komencantaj ĉe la interligo de la maldekstra tubo   
@@ -1133,6 +1134,14 @@ class LabHofmanAparato  extends LabUjo {
             height: h,
             y: -h
         });
+    }
+
+    ŝaltu(ŝaltita=true) {
+        this.elektra = ŝaltita;
+    }
+
+    ŝaltita() {
+        return this.elektra;
     }
 
     /**
@@ -1917,6 +1926,26 @@ class LabMezurilo extends LabIlo {
         };
         montrilo.append(tf);
         tf.beginElement();
+    }
+
+    ŝaltilo() {
+        return this.trovu_parton(".ŝaltilo"); 
+    }
+
+    ŝaltita() {
+        const s = this.ŝaltilo();
+        return s.classList.contains("ŝaltita");
+    }
+
+    ŝaltu(ŝaltita=true) {
+        const ŝaltilo = this.trovu_parton(".ŝaltilo");
+        if(ŝaltita) {
+            // ŝaltu
+            ŝaltilo.classList.add("ŝaltita");
+        } else {
+            // malŝaltu
+            ŝaltilo.classList.remove("ŝaltita");
+        }
     }
 }
 

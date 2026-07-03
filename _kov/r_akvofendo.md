@@ -8,6 +8,11 @@ js:
   - mathjax/es5/tex-chtml
   - laboratorio-0d
   - stato-0a
+  - tau-prolog/tau-prolog
+  #- tau-prolog/core.min
+  #- tau-prolog/js.min
+  #- tau-prolog/dom.min
+  - tau-prolog/taupl-util
 css:
   - laboratorio-0d
 ---
@@ -26,12 +31,159 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
 ## Malkombino de akvo
 {: .sekcio}
 
+<script type="text/prolog" id="aparatstatoj.pl">
+
+% eblaj statoj de la diversaj objektoj
+:- use_module(library(js)).
+:- use_module(library(dom)).
+:- use_module(library(format)).
+
+alterna(voltmetro,neshaltita,shaltita).
+alterna(hofman,senelektra,elektra).
+
+stato_alterna(Ilo,S1,S2) :- 
+  alterna(Ilo,S1,S2);
+  alterna(Ilo,S2,S1).
+
+stato(kandelo,neluma).
+stato(kandelo,luma).
+stato(kandelo,fajfa).
+
+stato(keno,nearda).
+stato(keno,arda).
+stato(keno,ardega).
+
+stato(krano_h2,fermita).
+stato(krano_h2,malfermita).
+stato(krano_o2,fermita).
+stato(krano_o2,malfermita).
+
+stato(provtubo_h2,malplena).
+stato(provtubo_h2,plenighanta).
+stato(provtubo_h2,fermita).
+stato(provtubo_h2,testata).
+
+stato(provtubo_o2,malplena).
+stato(provtubo_o2,plenighanta).
+stato(provtubo_o2,fermita).
+stato(provtubo_o2,testata).
+
+% trovi objekton per sia nomo en la laboratorio
+lab_ilo(Nomo,Ilo) :-
+  prop(lab,Lab),
+  prop(Lab,iloj,Iloj),
+  prop(Iloj,Nomo,Ilo).
+
+% protokolhelpiloj
+
+konzolo(Fs,Args) :- 
+    current_output(Out),
+    konzolo(Out,Fs,Args).
+
+konzolo(Stream,Fs,Args) :- 
+    phrase(format_(Fs,Args),Cs),(
+        atom_chars(Msg,Cs),
+        write(Stream,Msg)
+    ).
+
+transiro_write(Obj,De,Al) :-
+  konzolo(">>> ~w: ~w => ~w~n",[Obj,De,Al]).
+
+% transiroj inter statoj
+
+ecelo(Celo) :-
+  write(Celo),
+  catch(
+    Celo,
+    Eraro,
+    write(Eraro)
+  ).
+
+transiro_alterna(Ilo,De,Al) :-
+  % kontrolu nunan kaj alternan staton
+  en_stato(Ilo,De),
+  stato_alterna(Ilo,De,Al),
+  transiro_write(Ilo,De,Al).
+
+transiro(voltmetro) :-  
+  transiro_alterna(voltmetro,_,Al),
+  % konsekvencoj:
+  voltmetro(Al), % JS
+  % hofman ankaŭ havas alternan staton,
+  % do sufiĉas tio:
+  transiro(hofman).
+
+transiro(hofman):-
+  transiro_alterna(hofman,_,Al),
+  % konsekvencoj
+  hofman(Al).
+
+transiro(keno,ardega) :-
+  % kondiĉoj
+  en_stato(keno,arda),
+  en_stato(provtubo_o2,testata),
+  % konsekvencoj: keno ardegas kaj provtubo malpleniĝas
+  keno(ardega),
+  provtubo_o2(malplena).
+
+
+% statoj de objektoj
+en_stato(voltmetro,shaltita) :-
+  lab_ilo(voltmetro,Voltmetro),
+  apply(Voltmetro,'ŝaltita',[],true),
+  write(voltmetro_shaltita).
+  
+en_stato(voltmetro,neshaltita) :-
+  lab_ilo(voltmetro,Voltmetro),
+  apply(Voltmetro,'ŝaltita',[],false),
+  write(voltmetro_neshaltita).
+
+en_stato(hofman,elektra) :-
+  lab_ilo(hofman,Hofman),
+  apply(Hofman,'ŝaltita',[],true),
+  write(hofman_shaltita).
+
+en_stato(hofman,senelektra) :-
+  lab_ilo(hofman,Hofman),
+  apply(Hofman,'ŝaltita',[],false),
+  write(hofman_shaltita).
+
+% statoŝanĝoj
+
+voltmetro(shaltita) :-
+  lab_ilo(voltmetro,Voltmetro),
+  apply(Voltmetro,'ŝaltu',[1],_), % 1 = true, tau-pl aliokaze uzus signaron "false"
+  apply(Voltmetro,valoro,[19.8],_).
+
+voltmetro(neshaltita) :-
+  lab_ilo(voltmetro,Voltmetro),
+  apply(Voltmetro,'ŝaltu',[0],_), % 0 = false, tau-pl aliokaze uzus signaron "false"
+  apply(Voltmetro,valoro,[0],_).  
+
+hofman(elektra) :-
+  global(G),
+  apply(G,vezikoj,[],_).
+
+hofman(senelektra) :-
+  global(G),
+  apply(G,vezikoj_haltu,[],_).
+
+init :-
+  lab_ilo(voltmetro,Voltmetro),
+  apply(Voltmetro,'ŝaltilo',[],Shaltilo),
+  bind(Shaltilo,click,Event,ecelo(transiro(voltmetro))).
+
+</script>
+
 <script>
 
   const eksperimentoj = {
   }
 
-  let lab; // la laboratorio kaj iloj
+  // nur per var ĝi iros al windo.lab
+  // tiel ni povos uzi ĝin kun tau-prolog
+  var lab; // la laboratorio kaj iloj
+
   let aparato, voltmetro, eksperimento, provtubo1, provtubo2;
   const ALTO = 500;
   const LARĜO = 500;
@@ -45,6 +197,9 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
       });
       am.beginElement();
     }
+
+    // PLIBONIGU: realigu forigon de vezikoj en ŝaltu(false)
+    aparato.ŝaltu(false);
 
     // haltigu gasiĝon
     purigu_prokrastojn();
@@ -73,6 +228,9 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
         {...v1,...{id: "veziko_H2",n: 12}},
         {...v2, ...{id: "veziko_H2",n: 10}},
         limigo_H2, 25, h_alto);
+
+    // PLIBONIGU: realigu forigon de vezikoj en ŝaltu(true)
+    aparato.ŝaltu(true);
     aparato.vezikoj(veziketoj_O2,"1");  // aldonu vezikojn al jama likvo
     aparato.vezikoj(veziketoj_H2,"2");  // aldonu vezikojn al jama likvo
 
@@ -125,6 +283,14 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
       provtubo2.ŝtopu();
       lab.metu(provtubo2,{id: "p2_fermita", x: 400, y: -150});
     });
+  }
+
+  async function prologo(programo,demando) {
+    const seanco = await konsultu(pl,programo);
+    await demandu(seanco, demando);
+    const respondo = await sekva_respondo(seanco);
+    console.info("respondo el init: "+pl.format_answer(respondo));
+    //return respondo;
   }
 
   lanĉe(()=>{
@@ -208,14 +374,13 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
       ["malŝaltita","ŝaltita",() => {
         // ŝaltu...
         const ŝaltilo = voltmetro.trovu_parton(".ŝaltilo");
-        ŝaltilo.classList.add("ŝaltita");
+        voltmetro.ŝaltu(true);
         voltmetro.valoro(19.8);
         vezikoj();
       }],
       ["ŝaltita","malŝaltita", () => {
-        const ŝaltilo = voltmetro.trovu_parton(".ŝaltilo");
         // malŝaltu
-        ŝaltilo.classList.remove("ŝaltita");
+        voltmetro.ŝaltu(false);
         voltmetro.valoro(0);
         vezikoj_haltu();
       }]
@@ -234,10 +399,13 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     lab.metu(provtubo2,{id: "dekstre", x:X_HOFMANN+140, y: -95});
 
     // ŝaltilo por la elektro
+    /****************************
     const ŝaltilo = voltmetro.trovu_parton(".ŝaltilo");
     lab.klak_reago(ŝaltilo,(btn) => {
       voltmetrostato.transiru();
     });
+    */
+
     // bruligi/estingi kandelon
     lab.klak_reago(kandelo,(k) => {
       kandelstato.transiru();
@@ -247,7 +415,10 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
     //  kenstato.transiru();
     //});
 
+    // lanĉu la prolog-seancon (async)
+    prologo('aparatstatoj.pl','init.');
   });
+
 </script>
 
 <svg id="eksperimento"
