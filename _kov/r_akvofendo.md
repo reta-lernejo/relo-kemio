@@ -38,8 +38,8 @@ http://dodo.fb06.fh-muenchen.de/lab_didaktik/pdf/web-elektrolyse.pdf
 :- use_module(library(dom)).
 :- use_module(library(format)).
 
-alterna(voltmetro,neshaltita,shaltita).
-alterna(hofman,senelektra,elektra).
+alterna(voltmetro,neaktiva,aktiva).
+alterna(hofman,neaktiva,aktiva).
 
 stato_alterna(Ilo,S1,S2) :- 
   alterna(Ilo,S1,S2);
@@ -128,43 +128,43 @@ transiro(keno,ardega) :-
 
 
 % statoj de objektoj
-en_stato(voltmetro,shaltita) :-
+en_stato(voltmetro,aktiva) :-
   lab_ilo(voltmetro,Voltmetro),
-  apply(Voltmetro,'ŝaltita',[],true),
-  write(voltmetro_shaltita).
+  apply(Voltmetro,'aktiva',[],true),
+  write(voltmetro_aktiva).
   
-en_stato(voltmetro,neshaltita) :-
+en_stato(voltmetro,neaktiva) :-
   lab_ilo(voltmetro,Voltmetro),
-  apply(Voltmetro,'ŝaltita',[],false),
-  write(voltmetro_neshaltita).
+  apply(Voltmetro,'aktiva',[],false),
+  write(voltmetro_neaktiva).
 
-en_stato(hofman,elektra) :-
+en_stato(hofman,aktiva) :-
   lab_ilo(hofman,Hofman),
-  apply(Hofman,'ŝaltita',[],true),
-  write(hofman_shaltita).
+  apply(Hofman,'aktiva',[],true),
+  write(hofman_aktiva).
 
-en_stato(hofman,senelektra) :-
+en_stato(hofman,neaktiva) :-
   lab_ilo(hofman,Hofman),
-  apply(Hofman,'ŝaltita',[],false),
-  write(hofman_shaltita).
+  apply(Hofman,'aktiva',[],false),
+  write(hofman_neaktiva).
 
 % statoŝanĝoj
 
-voltmetro(shaltita) :-
+voltmetro(aktiva) :-
   lab_ilo(voltmetro,Voltmetro),
-  apply(Voltmetro,'ŝaltu',[1],_), % 1 = true, tau-pl aliokaze uzus signaron "false"
+  apply(Voltmetro,'aktivigu',[1],_), % 1 = true, tau-pl aliokaze uzus signaron "false"
   apply(Voltmetro,valoro,[19.8],_).
 
 voltmetro(neshaltita) :-
   lab_ilo(voltmetro,Voltmetro),
-  apply(Voltmetro,'ŝaltu',[0],_), % 0 = false, tau-pl aliokaze uzus signaron "false"
+  apply(Voltmetro,'aktivigu',[0],_), % 0 = false, tau-pl aliokaze uzus signaron "false"
   apply(Voltmetro,valoro,[0],_).  
 
-hofman(elektra) :-
+hofman(aktiva) :-
   global(G),
   apply(G,vezikoj,[],_).
 
-hofman(senelektra) :-
+hofman(neaktiva) :-
   global(G),
   apply(G,vezikoj_haltu,[],_).
 

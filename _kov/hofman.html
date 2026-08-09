@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hofmannscher Wasserzersetzungsapparat (Three.js)</title>
+    <link rel="stylesheet" href="hofman.css">
+</head>
+<body>
+    <h1>Hofmannscher Wasserzersetzungsapparat Simulation</h1>
+    <div id="info">
+        <p>Kathode (-) produziert H₂ | Anode (+) produziert O₂</p>
+        <p>Volumen H₂: <span id="vol-h2">0.00</span> | Volumen O₂: <span id="vol-o2">0.00</span></p>
+        <button id="startButton">Start</button>
+        <button id="resetButton">Reset</button>
+    </div>
+    <div id="canvas-container"></div>
+
+    <!-- Three.js Bibliothek (via CDN) -->
+    <script type="importmap">
+        {
+            "imports": {
+                "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+                "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+            }
+        }
+    </script>
+
+    <!-- Unser Skript -->
+    <script type="module" src="hofman.js"></script>
+</body>
+</html>
+
+

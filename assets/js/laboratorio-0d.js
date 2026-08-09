@@ -156,6 +156,7 @@ class LabSVG {
 class LabIlo {
     constructor(id, klaso="ilo") {
         this.id = id;
+        this.aktiva = false; // povas esti uzata por stato de ŝaltilo, lumo k.a.
 
         // SVG grupo-elemento, kiu entenas la grafikon de la ilo
         this.g = Lab.e("g",{
@@ -253,6 +254,14 @@ class LabIlo {
 
         console.debug(Date.now()+": ilo movu beginEvent");
         a.beginElement();
+    }
+
+    aktiva() {
+        return this.aktiva;
+    }
+
+    aktivigu(aktiva = true) {
+        this.aktiva = aktiva;
     }
 }
 
@@ -848,7 +857,6 @@ class LabHofmanAparato  extends LabUjo {
         this.ml_O2 = 0;
         this.nulo = h+30; // y-pozicio de maksimuma pleniĝo de dekstra/maldekstra tubo (skala 0 estas ĉe h)
         this.rnulo = h+70; // y-pozicio de maksimua pleniĝo de la meza rezervujo
-        this.elektra = false;
 
         // ujo el du tuboj kaj interligo
         // x-koordinatoj komencantaj ĉe la interligo de la maldekstra tubo   
@@ -1134,14 +1142,6 @@ class LabHofmanAparato  extends LabUjo {
             height: h,
             y: -h
         });
-    }
-
-    ŝaltu(ŝaltita=true) {
-        this.elektra = ŝaltita;
-    }
-
-    ŝaltita() {
-        return this.elektra;
     }
 
     /**
@@ -1932,12 +1932,8 @@ class LabMezurilo extends LabIlo {
         return this.trovu_parton(".ŝaltilo"); 
     }
 
-    ŝaltita() {
-        const s = this.ŝaltilo();
-        return s.classList.contains("ŝaltita");
-    }
-
-    ŝaltu(ŝaltita=true) {
+    aktivigu(ŝaltita=true) {
+        super.aktivigu(ŝaltita);
         const ŝaltilo = this.trovu_parton(".ŝaltilo");
         if(ŝaltita) {
             // ŝaltu
