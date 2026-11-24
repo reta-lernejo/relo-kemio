@@ -1,3 +1,2 @@
-Clazz.load(["java.util.Set"],"java.util.SortedSet",null,function(){
-Clazz.declareInterface(java.util,"SortedSet",java.util.Set);
-});
+Clazz.declareInterface(java.util, "SortedSet", java.util.Set);
+;//5.0.1-v7 Fri Nov 21 04:39:22 CST 2025

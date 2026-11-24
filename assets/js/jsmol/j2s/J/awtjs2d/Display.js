@@ -1,37 +1,46 @@
-Clazz.declarePackage ("J.awtjs2d");
-c$ = Clazz.declareType (J.awtjs2d, "Display");
-c$.getFullScreenDimensions = Clazz.defineMethod (c$, "getFullScreenDimensions", 
-function (canvas, widthHeight) {
+Clazz.declarePackage("J.awtjs2d");
+Clazz.load(null, "J.awtjs2d.Display", ["JU.PT"], function(){
+var c$ = Clazz.declareType(J.awtjs2d, "Display", null);
+c$.getFullScreenDimensions = Clazz.defineMethod(c$, "getFullScreenDimensions", 
+function(canvas, widthHeight){
 {
 widthHeight[0] = canvas.width;
 widthHeight[1] = canvas.height;
 }}, "~O,~A");
-c$.hasFocus = Clazz.defineMethod (c$, "hasFocus", 
-function (canvas) {
+c$.hasFocus = Clazz.defineMethod(c$, "hasFocus", 
+function(canvas){
 {
 }return true;
 }, "~O");
-c$.requestFocusInWindow = Clazz.defineMethod (c$, "requestFocusInWindow", 
-function (canvas) {
+c$.requestFocusInWindow = Clazz.defineMethod(c$, "requestFocusInWindow", 
+function(canvas){
 {
 }}, "~O");
-c$.renderScreenImage = Clazz.defineMethod (c$, "renderScreenImage", 
-function (vwr, g, size) {
+c$.renderScreenImage = Clazz.defineMethod(c$, "renderScreenImage", 
+function(vwr, g, size){
 {
 }}, "J.api.PlatformViewer,~O,~O");
-c$.prompt = Clazz.defineMethod (c$, "prompt", 
-function (label, data, list, asButtons) {
+c$.prompt = Clazz.defineMethod(c$, "prompt", 
+function(vwr, label, data, list, asButtons){
+if (!asButtons) {
 {
 var s = (data == null ? alert(label) : prompt(label, data));
-if (s != null)return s;
+return "" + s;
+}}if (data != null) list = JU.PT.split(data, "|");
+var option = (vwr).eval.promptAsync(label, list);
+if (option != null) {
+if (data == null) {
+for (var i = 0; i < list.length; i++) if (list[i].equals(data)) return "" + i;
+
+}return option;
 }return "null";
-}, "~S,~S,~A,~B");
-c$.convertPointFromScreen = Clazz.defineMethod (c$, "convertPointFromScreen", 
-function (canvas, ptTemp) {
+}, "J.api.PlatformViewer,~S,~S,~A,~B");
+c$.convertPointFromScreen = Clazz.defineMethod(c$, "convertPointFromScreen", 
+function(canvas, ptTemp){
 {
 }}, "~O,JU.P3");
-c$.drawImage = Clazz.defineMethod (c$, "drawImage", 
-function (context, canvas, x, y, width, height, isDTI) {
+c$.drawImage = Clazz.defineMethod(c$, "drawImage", 
+function(context, canvas, x, y, width, height, isDTI){
 {
 var buf8 = canvas.buf8;
 var buf32 = canvas.buf32;
@@ -62,3 +71,5 @@ j += dw;
 }
 context.putImageData(canvas.imgdata,0,0);
 }}, "~O,~O,~N,~N,~N,~N,~B");
+});
+;//5.0.1-v7 Mon Oct 26 17:21:26 CDT 2026

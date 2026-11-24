@@ -1,2 +1,3 @@
-Clazz.declarePackage ("JSV.api");
-Clazz.declareInterface (JSV.api, "PlatformDialog");
+Clazz.declarePackage("JSV.api");
+Clazz.declareInterface(JSV.api, "PlatformDialog");
+;//5.0.1-v7 Mon Oct 26 17:21:26 CDT 2026

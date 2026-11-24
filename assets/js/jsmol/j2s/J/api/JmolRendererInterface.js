@@ -1,4 +1,3 @@
-Clazz.declarePackage ("J.api");
-Clazz.load (["J.api.JmolGraphicsInterface"], "J.api.JmolRendererInterface", null, function () {
-Clazz.declareInterface (J.api, "JmolRendererInterface", J.api.JmolGraphicsInterface);
-});
+Clazz.declarePackage("J.api");
+Clazz.declareInterface(J.api, "JmolRendererInterface", J.api.JmolGraphicsInterface);
+;//5.0.1-v7 Mon Oct 26 17:21:26 CDT 2026

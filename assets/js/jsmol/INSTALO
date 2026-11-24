@@ -1,0 +1,10 @@
+por elŝuti iu al:
+  - https://jmol.sourceforge.net/download/
+  - https://sourceforge.net/projects/jmol/
+
+la programo estas skribita en Javo, sed enhavas
+dosieron jsmol.zip, kiun vi povas malpaki por
+elpreni nur ls JS-tradukon de la pakaĵo.
+
+El ties dosierujo jsmol vi bezonas nur dosierujon `j2s` kaj dosieron 
+`JSmol.min.js`
