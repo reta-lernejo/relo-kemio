@@ -47,9 +47,9 @@ Oni povas resumi bazajn ecojn de la tri bazaj materistatoj tiel:
 
 <figure>
 <p>
-<img width="240" alt="Gif -AtomosSolido 01" src="https://upload.wikimedia.org/wikipedia/commons/thumb/b/ba/Gif_-AtomosSolido_01.gif/512px-Gif_-AtomosSolido_01.gif">
-<img width="240" alt="Gif -AtomosLiquid 03" src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5b/Gif_-AtomosLiquid_03.gif/512px-Gif_-AtomosLiquid_03.gif">
-<img width="240" alt="Gif -AtomosGas 02" src="https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Gif_-AtomosGas_02.gif/512px-Gif_-AtomosGas_02.gif">
+<img width="240" alt="solida materistato" src="../assets/bld/Gif_-AtomosSolido_01.gif/512px-Gif_-AtomosSolido_01.gif">
+<img width="240" alt="likva materistato" src="../assets/bld/Gif_-AtomosLiquid_03.gif/512px-Gif_-AtomosLiquid_03.gif">
+<img width="240" alt="gasa materistato" src="../assets/bld/Gif_-AtomosGas_02.gif/512px-Gif_-AtomosGas_02.gif">
 </p>
 <figcaption>
 <a href="https://commons.wikimedia.org/wiki/File:Gif_-AtomosGas_02.gif">Julio Miguel A Enriquez kaj Monica Muñoz</a>, <a href="https://creativecommons.org/licenses/by-sa/4.0">CC BY-SA 4.0</a>, el Wikimedia Commons
